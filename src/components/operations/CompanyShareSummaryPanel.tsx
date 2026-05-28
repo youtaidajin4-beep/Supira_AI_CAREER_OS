@@ -8,38 +8,23 @@ export function CompanyShareSummaryPanel({
   summary: CompanyShareSummary;
 }) {
   return (
-    <DashboardSection
-      title="企業共有"
-      subtitle="未共有・今日の共有候補"
-      href="/company-updates"
-      bodyClassName="!py-4"
-    >
-      <div className="mb-4 flex gap-6">
-        <div>
-          <p className="text-2xl font-semibold tabular-nums text-foreground">
-            {summary.unsharedCount}
-          </p>
-          <p className="text-[11px] text-foreground-muted">未共有</p>
-        </div>
-        <div>
-          <p className="text-2xl font-semibold tabular-nums text-accent">
-            {summary.todayShareCount}
-          </p>
-          <p className="text-[11px] text-foreground-muted">今日共有候補</p>
-        </div>
-      </div>
+    <DashboardSection title="企業共有" href="/company-updates">
+      <p className="text-sm text-foreground-secondary">
+        未共有 <span className="font-semibold text-foreground">{summary.unsharedCount}</span>
+        <span className="mx-2 text-border">·</span>
+        今日の候補{" "}
+        <span className="font-semibold text-accent">{summary.todayShareCount}</span>
+      </p>
       {summary.hotCompanies.length > 0 && (
-        <ul className="space-y-1.5 border-t border-border-subtle pt-3">
+        <ul className="mt-3 space-y-1 border-t border-border-subtle pt-3">
           {summary.hotCompanies.slice(0, 3).map((c) => (
             <li key={c.companyId}>
               <Link
                 href={`/companies/${c.companyId}`}
-                className="flex justify-between text-sm text-foreground-secondary hover:text-accent"
+                className="flex justify-between text-sm hover:text-accent"
               >
-                <span className="truncate">{c.companyName}</span>
-                <span className="shrink-0 tabular-nums text-foreground-muted">
-                  {c.studentCount}名
-                </span>
+                <span>{c.companyName}</span>
+                <span className="text-foreground-muted">{c.studentCount}名</span>
               </Link>
             </li>
           ))}

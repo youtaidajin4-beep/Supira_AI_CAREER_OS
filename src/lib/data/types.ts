@@ -503,9 +503,9 @@ export const PERFORMANCE_LABELS: Record<CAPerformanceStatus, string> = {
 };
 
 export const PRIORITY_LAYER_LABELS: Record<PriorityLayer, string> = {
-  critical: "今すぐ介入",
-  attention: "今日中に確認",
-  info: "確認のみ",
+  critical: "今すぐ",
+  attention: "今日中",
+  info: "確認",
 };
 
 export const KNOWLEDGE_CATEGORY_LABELS: Record<KnowledgeCategory, string> = {

@@ -2,29 +2,6 @@ import Link from "next/link";
 import type { CAAttentionSummary } from "@/lib/data/types";
 import { cn } from "@/lib/utils/cn";
 
-const METRICS: {
-  key: keyof Pick<
-    CAAttentionSummary,
-    | "studentCount"
-    | "atRiskCount"
-    | "staleInterviewCount"
-    | "interviewUpdateRate"
-    | "weeklyInterviewCount"
-    | "delayedReplyCount"
-    | "highTempCount"
-  >;
-  label: string;
-  suffix?: string;
-}[] = [
-  { key: "studentCount", label: "担当数" },
-  { key: "atRiskCount", label: "離脱リスク" },
-  { key: "staleInterviewCount", label: "面談停滞" },
-  { key: "interviewUpdateRate", label: "記録更新率", suffix: "%" },
-  { key: "weeklyInterviewCount", label: "今週面談" },
-  { key: "delayedReplyCount", label: "返信遅延" },
-  { key: "highTempCount", label: "高温度感" },
-];
-
 export function CAAttentionCard({ summary }: { summary: CAAttentionSummary }) {
   const needsAttention =
     summary.ca.performanceStatus === "needs_support" ||
@@ -35,29 +12,21 @@ export function CAAttentionCard({ summary }: { summary: CAAttentionSummary }) {
     <Link
       href={`/cas/${summary.ca.id}`}
       className={cn(
-        "block rounded-xl border border-border/80 bg-background-subtle/50 p-4 transition-all",
-        "hover:border-accent/20 hover:bg-background hover:shadow-[var(--shadow-xs)]",
-        needsAttention && "border-l-[3px] border-l-warning/80 bg-warning-subtle/20"
+        "block rounded-lg border border-border/70 px-3 py-2.5 hover:bg-background-subtle/80",
+        needsAttention && "border-l-2 border-l-warning/80"
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <p className="font-semibold text-foreground">{summary.ca.name}</p>
+        <span className="font-medium text-foreground">{summary.ca.name}</span>
         {needsAttention && (
-          <span className="text-[10px] font-medium text-warning">要フォロー</span>
+          <span className="text-[10px] text-warning">要フォロー</span>
         )}
       </div>
-      <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-7">
-        {METRICS.map(({ key, label, suffix }) => (
-          <div key={key} className="text-center">
-            <p className="text-lg font-semibold tabular-nums text-foreground">
-              {summary[key]}
-              {suffix ?? ""}
-            </p>
-            <p className="text-[10px] text-foreground-muted">{label}</p>
-          </div>
-        ))}
-      </div>
-      <p className="mt-3 text-xs leading-relaxed text-foreground-secondary">
+      <p className="mt-1 text-xs text-foreground-muted">
+        担当{summary.studentCount} · 離脱{summary.atRiskCount} · 遅延
+        {summary.delayedReplyCount} · 更新率{summary.interviewUpdateRate}%
+      </p>
+      <p className="mt-1.5 line-clamp-2 text-xs text-foreground-secondary">
         {summary.aiComment}
       </p>
     </Link>
