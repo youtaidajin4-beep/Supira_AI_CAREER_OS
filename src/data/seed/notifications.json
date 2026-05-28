@@ -1,0 +1,47 @@
+[
+  {
+    "id": "notif-001",
+    "type": "alert",
+    "title": "7日未返信",
+    "message": "鈴木 花音さんが10日間返信がありません。フォローをおすすめします。",
+    "studentId": "stu-003",
+    "read": false,
+    "createdAt": "2026-05-28T08:00:00.000Z"
+  },
+  {
+    "id": "notif-002",
+    "type": "alert",
+    "title": "7日未返信",
+    "message": "中村 優奈さんが9日間返信がありません。",
+    "studentId": "stu-007",
+    "read": false,
+    "createdAt": "2026-05-28T08:00:00.000Z"
+  },
+  {
+    "id": "notif-003",
+    "type": "alert",
+    "title": "面談キャンセル",
+    "message": "加藤 真由さんが面談をキャンセルしました。再調整が必要です。",
+    "studentId": "stu-009",
+    "read": false,
+    "createdAt": "2026-05-27T14:00:00.000Z"
+  },
+  {
+    "id": "notif-004",
+    "type": "alert",
+    "title": "選考停止リスク",
+    "message": "鈴木 花音さんは離脱リスクかつ休止ステータスです。",
+    "studentId": "stu-003",
+    "read": false,
+    "createdAt": "2026-05-26T09:00:00.000Z"
+  },
+  {
+    "id": "notif-005",
+    "type": "info",
+    "title": "新規学生登録",
+    "message": "伊藤 さくらさんが学生カルテに追加されました。",
+    "studentId": "stu-005",
+    "read": true,
+    "createdAt": "2026-05-20T09:00:00.000Z"
+  }
+]

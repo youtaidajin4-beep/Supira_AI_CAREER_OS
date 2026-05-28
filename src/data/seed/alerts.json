@@ -1,0 +1,54 @@
+[
+  {
+    "id": "alert-seed-001",
+    "type": "temperature",
+    "title": "離脱リスク: 鈴木 花音",
+    "description": "10日以上未返信。面談キャンセル履歴あり。",
+    "relatedCaId": "ca-001",
+    "relatedStudentId": "stu-003",
+    "severity": "critical",
+    "resolved": false,
+    "createdAt": "2026-05-28T06:00:00.000Z"
+  },
+  {
+    "id": "alert-seed-002",
+    "type": "contact_stale",
+    "title": "連絡停滞: 中村 優奈",
+    "description": "7日以上学生からの返信なし。",
+    "relatedCaId": "ca-003",
+    "relatedStudentId": "stu-007",
+    "severity": "warning",
+    "resolved": false,
+    "createdAt": "2026-05-27T08:00:00.000Z"
+  },
+  {
+    "id": "alert-seed-003",
+    "type": "ca_variance",
+    "title": "CAフォロー差: 伊藤 翔",
+    "description": "担当学生のメモ更新が他CAより遅れています。",
+    "relatedCaId": "ca-004",
+    "severity": "warning",
+    "resolved": false,
+    "createdAt": "2026-05-26T10:00:00.000Z"
+  },
+  {
+    "id": "alert-seed-004",
+    "type": "company_update",
+    "title": "未共有の企業連絡: アクセンチュア",
+    "description": "一次面接日程の前倒し対応が未共有です。",
+    "severity": "info",
+    "resolved": false,
+    "createdAt": "2026-05-28T06:00:00.000Z"
+  },
+  {
+    "id": "alert-seed-005",
+    "type": "memo_stale",
+    "title": "メモ未更新: 橋本 奈々",
+    "description": "7日以上カルテメモが更新されていません。",
+    "relatedCaId": "ca-004",
+    "relatedStudentId": "stu-019",
+    "severity": "warning",
+    "resolved": false,
+    "createdAt": "2026-05-27T12:00:00.000Z"
+  }
+]
