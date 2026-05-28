@@ -35,8 +35,9 @@ export function CAAttentionCard({ summary }: { summary: CAAttentionSummary }) {
     <Link
       href={`/cas/${summary.ca.id}`}
       className={cn(
-        "block rounded-xl border border-border bg-background p-4 transition-all hover:shadow-sm",
-        needsAttention && "border-l-[3px] border-l-warning"
+        "block rounded-xl border border-border/80 bg-background-subtle/50 p-4 transition-all",
+        "hover:border-accent/20 hover:bg-background hover:shadow-[var(--shadow-xs)]",
+        needsAttention && "border-l-[3px] border-l-warning/80 bg-warning-subtle/20"
       )}
     >
       <div className="flex items-center justify-between gap-2">

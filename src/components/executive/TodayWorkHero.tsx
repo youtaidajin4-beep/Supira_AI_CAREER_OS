@@ -1,6 +1,5 @@
-import { CalendarClock, Sparkles } from "lucide-react";
+import { CalendarClock } from "lucide-react";
 import type { Alert, CompanyUpdate } from "@/lib/data/types";
-import { cn } from "@/lib/utils/cn";
 
 interface TodayWorkHeroProps {
   dateLabel: string;
@@ -14,85 +13,43 @@ export function TodayWorkHero({
   dateLabel,
   priorityCount,
   interventionCount,
-  criticalAlerts,
   pendingCompanyUpdates,
 }: TodayWorkHeroProps) {
-  const taskCount =
-    interventionCount + priorityCount + pendingCompanyUpdates.length;
-
   return (
-    <section
-      className={cn(
-        "relative overflow-hidden rounded-2xl border border-accent/15",
-        "bg-gradient-to-br from-accent/90 via-accent to-accent-hover/95",
-        "px-6 py-6 text-white shadow-sm sm:px-8 sm:py-7"
-      )}
-    >
+    <header className="relative overflow-hidden rounded-2xl border border-border/80 bg-background shadow-[var(--shadow-card)]">
       <div
-        className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_0%_-20%,var(--accent-subtle),transparent_55%)]"
         aria-hidden
       />
-      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-white/80">
-            <CalendarClock className="h-4 w-4" strokeWidth={2} />
-            <span className="text-sm font-medium">{dateLabel}</span>
-          </div>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-[1.75rem]">
-            オペレーションセンター
-          </h2>
-          <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/85">
-            優先学生・CA注意・未共有企業・代表介入を上から順に確認してください。
-          </p>
+      <div
+        className="pointer-events-none absolute -right-16 top-0 h-48 w-48 rounded-full bg-accent/[0.06] blur-3xl"
+        aria-hidden
+      />
+      <div className="relative px-6 py-7 sm:px-8 sm:py-8">
+        <div className="flex items-center gap-2 text-foreground-muted">
+          <CalendarClock className="h-4 w-4 text-accent" strokeWidth={1.75} />
+          <span className="text-sm font-medium">{dateLabel}</span>
         </div>
-        <div className="flex shrink-0 gap-3">
-          <HeroStat
-            value={taskCount}
-            label="対応候補"
-            highlight
-          />
-          <HeroStat
-            value={interventionCount}
-            label="介入候補"
-            warn={interventionCount > 0}
-          />
-          <HeroStat
-            value={pendingCompanyUpdates.length}
-            label="未共有連絡"
-          />
-        </div>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-[1.65rem]">
+          おはようございます、福与さん
+        </h1>
+        <p className="mt-2 max-w-xl text-sm leading-relaxed text-foreground-secondary">
+          今日は
+          <span className="font-medium text-foreground">
+            {" "}
+            優先学生 {priorityCount}名
+          </span>
+          ・
+          <span className="font-medium text-foreground">
+            介入候補 {interventionCount}件
+          </span>
+          ・
+          <span className="font-medium text-foreground">
+            未共有連絡 {pendingCompanyUpdates.length}件
+          </span>
+          。上から順に確認してください。
+        </p>
       </div>
-      <div className="relative mt-4 flex items-center gap-1.5 text-xs text-white/75">
-        <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
-        フォロールールに基づき自動で優先度を算出しています
-      </div>
-    </section>
-  );
-}
-
-function HeroStat({
-  value,
-  label,
-  highlight,
-  warn,
-}: {
-  value: number;
-  label: string;
-  highlight?: boolean;
-  warn?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "min-w-[4.5rem] rounded-xl px-4 py-3 text-center backdrop-blur-sm",
-        highlight ? "bg-white/20 ring-1 ring-white/30" : "bg-white/10",
-        warn && value > 0 && "ring-2 ring-warning/80"
-      )}
-    >
-      <p className="text-2xl font-bold tabular-nums">{value}</p>
-      <p className="mt-0.5 text-[10px] font-medium uppercase tracking-wide text-white/80">
-        {label}
-      </p>
-    </div>
+    </header>
   );
 }

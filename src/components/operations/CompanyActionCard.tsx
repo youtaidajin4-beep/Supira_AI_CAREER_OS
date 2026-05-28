@@ -23,8 +23,9 @@ export function CompanyActionCard({ update }: { update: CompanyUpdate }) {
   return (
     <article
       className={cn(
-        "flex min-w-[280px] max-w-sm shrink-0 flex-col rounded-xl border border-border bg-background p-4",
-        update.shareStatus === "unshared" && "border-l-[3px] border-l-warning"
+        "flex min-w-[300px] max-w-sm shrink-0 flex-col rounded-xl border border-border/80 bg-background p-4 shadow-[var(--shadow-xs)]",
+        "transition-shadow hover:shadow-[var(--shadow-card)]",
+        update.shareStatus === "unshared" && "border-l-[3px] border-l-warning/80"
       )}
     >
       <div className="flex items-start justify-between gap-2">

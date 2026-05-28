@@ -2,17 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --background-subtle: #f4f6f9;
-  --background-muted: #eceef2;
+  --background-subtle: #f6f8fb;
+  --background-muted: #eef1f6;
   --foreground: #0f172a;
   --foreground-secondary: #334155;
   --foreground-muted: #64748b;
   --border: #e2e8f0;
   --border-subtle: #f1f5f9;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --accent-subtle: #eff6ff;
-  --accent-muted: #dbeafe;
+  --accent: #3b5bdb;
+  --accent-hover: #364fc7;
+  --accent-subtle: #edf2ff;
+  --accent-muted: #dbe4ff;
   --danger: #dc2626;
   --danger-subtle: #fef2f2;
   --success: #059669;
@@ -22,9 +22,12 @@
   --shadow-xs: 0 1px 2px rgb(15 23 42 / 0.04);
   --shadow-sm: 0 1px 3px rgb(15 23 42 / 0.06), 0 1px 2px rgb(15 23 42 / 0.04);
   --shadow-md: 0 4px 12px rgb(15 23 42 / 0.06);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.04);
+  --shadow-card-hover: 0 2px 4px rgb(15 23 42 / 0.06), 0 12px 32px rgb(15 23 42 / 0.08);
   --radius: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 }
 
 @theme inline {
@@ -50,6 +53,20 @@
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
+  --shadow-card: var(--shadow-card);
+}
+
+.dashboard-card {
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgb(226 232 240 / 0.9);
+  background: var(--background);
+  box-shadow: var(--shadow-card);
+}
+
+.dashboard-card-muted {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: rgb(255 255 255 / 0.7);
 }
 
 html {
