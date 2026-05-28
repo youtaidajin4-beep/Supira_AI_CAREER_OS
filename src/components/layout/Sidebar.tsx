@@ -11,6 +11,9 @@ import {
   Bell,
   Settings,
   FileBarChart,
+  Activity,
+  BookOpen,
+  Building,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -18,8 +21,11 @@ const navItems = [
   { href: "/", label: "オペレーションダッシュボード", icon: LayoutDashboard },
   { href: "/cas", label: "CA管理", icon: UserCog },
   { href: "/students", label: "学生管理", icon: Users },
+  { href: "/companies", label: "企業管理", icon: Building },
   { href: "/company-updates", label: "企業連絡", icon: Building2 },
   { href: "/alerts", label: "要注意アラート", icon: Bell },
+  { href: "/activity-feed", label: "活動フィード", icon: Activity },
+  { href: "/knowledge", label: "ナレッジ", icon: BookOpen },
   { href: "/interviews/upload", label: "面談AI", icon: Mic },
   { href: "/reports", label: "レポート", icon: FileBarChart },
   { href: "/settings", label: "設定", icon: Settings },
@@ -46,7 +52,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 scroll-area">
         <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-foreground-muted/80">
           メニュー
         </p>
@@ -61,7 +67,7 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] transition-all duration-150",
+                "group relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] transition-all duration-150",
                 active
                   ? "bg-accent-subtle font-medium text-accent shadow-xs"
                   : "text-foreground-secondary hover:bg-background-subtle hover:text-foreground"
@@ -72,7 +78,7 @@ export function Sidebar() {
               )}
               <Icon
                 className={cn(
-                  "h-[18px] w-[18px] shrink-0 transition-colors",
+                  "h-4 w-4 shrink-0 transition-colors",
                   active
                     ? "text-accent"
                     : "text-foreground-muted group-hover:text-foreground-secondary"
@@ -86,7 +92,7 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-border-subtle p-3">
-        <div className="mb-2 rounded-lg bg-background-subtle px-3 py-2.5">
+        <div className="rounded-lg bg-background-subtle px-3 py-2.5">
           <p className="text-[11px] font-medium text-foreground-muted">
             代表モード
           </p>

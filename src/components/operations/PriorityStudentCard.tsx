@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, User } from "lucide-react";
 import type { PriorityStudentCard as Card } from "@/lib/data/types";
+import { PriorityLayerBadge } from "@/components/shared/PriorityLayerBadge";
 import { TemperatureBadge } from "@/components/students/TemperatureBadge";
 import { cn } from "@/lib/utils/cn";
 
@@ -20,6 +21,7 @@ export function PriorityStudentCard({ card }: { card: Card }) {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-semibold text-foreground">{student.name}</span>
+            <PriorityLayerBadge layer={card.priorityLayer} />
             <TemperatureBadge temperature={student.temperature} />
             {card.temperatureDroppedRecently && (
               <span className="rounded-md bg-warning-subtle px-2 py-0.5 text-[10px] font-medium text-warning">

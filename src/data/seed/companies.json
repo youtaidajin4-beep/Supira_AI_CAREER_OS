@@ -1,0 +1,116 @@
+[
+  {
+    "id": "company-001",
+    "name": "アクセンチュア",
+    "industry": "コンサルティング",
+    "targetProfile": "論理的思考・リーダーシップ経験",
+    "desiredPersonality": "自律性が高く、チームで成果を出せる人",
+    "hiringCount": 120,
+    "selectionFlow": "ES → ケース面接 → 最終面接",
+    "briefingSchedule": "2026-06-05 18:00 オンライン",
+    "relatedCaIds": ["ca-001", "ca-004"],
+    "activeStudentIds": ["stu-001", "stu-006"],
+    "knowledge": {
+      "interviewQuestions": ["志望動機の深掘り", "リーダーシップエピソード", "ケースの構造化"],
+      "passedStudentTraits": ["ゼミ代表経験", "部活キャプテン", "インターン経験"],
+      "cautionNotes": ["面接前日のキャンセルは印象が悪い", "ESは具体数字を入れる"],
+      "caShareMemo": "コンサル志望の学生にはケース練習を2回以上実施してから紹介する"
+    },
+    "lastUpdatedAt": "2026-05-28T06:00:00.000Z"
+  },
+  {
+    "id": "company-002",
+    "name": "メルカリ",
+    "industry": "IT・インターネット",
+    "targetProfile": "プロダクト志向・行動力",
+    "desiredPersonality": "仮説検証が得意で、スピード感がある人",
+    "hiringCount": 40,
+    "selectionFlow": "カジュアル → ES → 技術/カルチャー面接",
+    "briefingSchedule": "2026-06-10 19:00 オンライン",
+    "relatedCaIds": ["ca-002"],
+    "activeStudentIds": ["stu-002", "stu-008"],
+    "knowledge": {
+      "interviewQuestions": ["プロダクト改善案", "失敗経験と学び", "価値観の一致"],
+      "passedStudentTraits": ["ハッカソン参加", "起業経験", "PMインターン"],
+      "cautionNotes": ["カジュアル面談の枠は早めに確保"],
+      "caShareMemo": "IT志望学生にはプロダクト思考の面接練習を推奨"
+    },
+    "lastUpdatedAt": "2026-05-27T14:00:00.000Z"
+  },
+  {
+    "id": "company-003",
+    "name": "三菱UFJ銀行",
+    "industry": "金融",
+    "targetProfile": "安定志向・コミュニケーション力",
+    "desiredPersonality": "誠実で、長期的に組織に貢献できる人",
+    "hiringCount": 200,
+    "selectionFlow": "ES → グループディスカッション → 面接",
+    "briefingSchedule": "2026-06-12 14:00 本社",
+    "relatedCaIds": ["ca-003"],
+    "activeStudentIds": ["stu-004"],
+    "knowledge": {
+      "interviewQuestions": ["金融業界志望理由", "チームでの役割", "ストレス対処"],
+      "passedStudentTraits": ["学生時代の継続活動", "アルバイトリーダー"],
+      "cautionNotes": ["内定承諾期限の延長は事前相談必須"],
+      "caShareMemo": "メガバンク志望はGD練習を週1回以上"
+    },
+    "lastUpdatedAt": "2026-05-26T10:00:00.000Z"
+  },
+  {
+    "id": "company-004",
+    "name": "楽天グループ",
+    "industry": "IT・EC",
+    "targetProfile": "チャレンジ精神・英語力",
+    "desiredPersonality": "変化を楽しみ、グローバル志向がある人",
+    "hiringCount": 80,
+    "selectionFlow": "ES → 一次面接 → 最終面接",
+    "briefingSchedule": "2026-06-08 17:00 オンライン",
+    "relatedCaIds": ["ca-002", "ca-005"],
+    "activeStudentIds": ["stu-003", "stu-012"],
+    "knowledge": {
+      "interviewQuestions": ["楽天のサービス改善案", "英語での自己紹介", "逆境経験"],
+      "passedStudentTraits": ["留学経験", "英語資格", "長期インターン"],
+      "cautionNotes": ["英語面接は必ず模擬を1回以上"],
+      "caShareMemo": "ベンチャー・IT併願の学生に優先紹介"
+    },
+    "lastUpdatedAt": "2026-05-25T16:00:00.000Z"
+  },
+  {
+    "id": "company-005",
+    "name": "デロイト",
+    "industry": "コンサルティング",
+    "targetProfile": "会計・コンサル併願",
+    "desiredPersonality": "分析力とコミュニケーションのバランス",
+    "hiringCount": 90,
+    "selectionFlow": "ES → 面接2回",
+    "briefingSchedule": "2026-06-15 18:30 オンライン",
+    "relatedCaIds": ["ca-001"],
+    "activeStudentIds": ["stu-001", "stu-018"],
+    "knowledge": {
+      "interviewQuestions": ["会計とコンサルの違い", "志望企業の比較", "強みの具体化"],
+      "passedStudentTraits": ["公認会計士受験経験", "コンサルインターン"],
+      "cautionNotes": ["併願企業の開示は面接で聞かれる"],
+      "caShareMemo": "コンサル志望の学生とセットで紹介しやすい"
+    },
+    "lastUpdatedAt": "2026-05-24T09:00:00.000Z"
+  },
+  {
+    "id": "company-006",
+    "name": "サイバーエージェント",
+    "industry": "IT・広告",
+    "targetProfile": "クリエイティブ・マーケ志向",
+    "desiredPersonality": "好奇心が強く、新しいことに挑戦できる人",
+    "hiringCount": 50,
+    "selectionFlow": "ES → グループワーク → 面接",
+    "briefingSchedule": "2026-06-18 19:00 渋谷",
+    "relatedCaIds": ["ca-005"],
+    "activeStudentIds": ["stu-020", "stu-022"],
+    "knowledge": {
+      "interviewQuestions": ["デジタルマーケの関心", "チームプロジェクト", "失敗からの学び"],
+      "passedStudentTraits": ["広告研究会", "SNS運用経験"],
+      "cautionNotes": ["グループワークは積極性が評価される"],
+      "caShareMemo": "メルカリ併願のIT学生にクロス紹介"
+    },
+    "lastUpdatedAt": "2026-05-23T12:00:00.000Z"
+  }
+]

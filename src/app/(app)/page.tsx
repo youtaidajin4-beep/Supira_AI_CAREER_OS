@@ -10,6 +10,12 @@ import { CAAttentionCard } from "@/components/operations/CAAttentionCard";
 import { CompanyActionCard } from "@/components/operations/CompanyActionCard";
 import { OperationInsightPanel } from "@/components/operations/OperationInsightPanel";
 import { InterventionPanel } from "@/components/operations/InterventionPanel";
+import { ActivityFeed } from "@/components/operations/ActivityFeed";
+import { LayeredAlertsPanel } from "@/components/operations/LayeredAlertsPanel";
+import { CAOperationsSummaryPanel } from "@/components/operations/CAOperationsSummaryPanel";
+import { CompanyShareSummaryPanel } from "@/components/operations/CompanyShareSummaryPanel";
+import { KnowledgeCandidatesPanel } from "@/components/operations/KnowledgeCandidatesPanel";
+import Link from "next/link";
 import { AddStudentModal } from "@/components/students/AddStudentModal";
 import { buttonClass } from "@/components/ui/button";
 import { clientMockFallback } from "@/lib/api/client-mock-fallback";
@@ -92,6 +98,33 @@ export default function DashboardPage() {
               criticalAlerts={data.criticalAlerts}
               pendingCompanyUpdates={data.pendingCompanyUpdates}
             />
+
+            <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
+              <section className="rounded-xl border border-border bg-background p-5 lg:col-span-2">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-foreground">
+                    今日の動き
+                  </h3>
+                  <Link
+                    href="/activity-feed"
+                    className="text-xs text-accent hover:underline"
+                  >
+                    すべて見る
+                  </Link>
+                </div>
+                <ActivityFeed logs={data.activityFeed} compact />
+              </section>
+              <div className="lg:col-span-3">
+                <LayeredAlertsPanel alerts={data.layeredAlerts} />
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <CAOperationsSummaryPanel summary={data.caOperationsSummary} />
+              <CompanyShareSummaryPanel summary={data.companyShareSummary} />
+            </div>
+
+            <KnowledgeCandidatesPanel items={data.knowledgeCandidates} />
 
             <section className="space-y-3">
               <div className="flex items-baseline justify-between gap-2">

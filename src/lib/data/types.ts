@@ -31,6 +31,146 @@ export type AlertType =
 
 export type CAPerformanceStatus = "excellent" | "good" | "needs_support";
 
+export type PriorityLayer = "critical" | "attention" | "info";
+
+export type ActivityLogType =
+  | "interview_completed"
+  | "temperature_changed"
+  | "es_reviewed"
+  | "company_update"
+  | "no_reply"
+  | "memo_updated"
+  | "next_action_missing";
+
+export type ActivityLogSeverity = "critical" | "attention" | "info";
+
+export type KnowledgeCategory =
+  | "gakuchika"
+  | "self_analysis"
+  | "es_review"
+  | "interview"
+  | "company_intro"
+  | "retention"
+  | "student_follow"
+  | "ca_success"
+  | "company_strategy";
+
+export interface ActivityLog {
+  id: string;
+  type: ActivityLogType;
+  title: string;
+  description: string;
+  relatedStudentId?: string;
+  relatedStudentName?: string;
+  relatedCaId?: string;
+  relatedCaName?: string;
+  relatedCompanyId?: string;
+  relatedCompanyName?: string;
+  severity: ActivityLogSeverity;
+  createdAt: string;
+}
+
+export interface LayeredItem {
+  id: string;
+  layer: PriorityLayer;
+  title: string;
+  description: string;
+  relatedStudentId?: string;
+  relatedStudentName?: string;
+  relatedCaId?: string;
+  relatedCaName?: string;
+  relatedCompanyId?: string;
+  relatedCompanyName?: string;
+  createdAt: string;
+}
+
+export interface LayeredAlerts {
+  critical: LayeredItem[];
+  attention: LayeredItem[];
+  info: LayeredItem[];
+}
+
+export interface CompanyKnowledge {
+  interviewQuestions: string[];
+  passedStudentTraits: string[];
+  cautionNotes: string[];
+  caShareMemo: string;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  industry: string;
+  targetProfile: string;
+  desiredPersonality: string;
+  hiringCount: number;
+  selectionFlow: string;
+  briefingSchedule: string;
+  relatedCaIds: string[];
+  activeStudentIds: string[];
+  knowledge: CompanyKnowledge;
+  lastUpdatedAt: string;
+}
+
+export interface CompanyListItem extends Company {
+  selectingStudentCount: number;
+  urgentContactCount: number;
+  relatedCaNames: string[];
+}
+
+export interface CompanyStudentRow {
+  student: Student;
+  stage: string;
+}
+
+export interface CompanyDetail extends Company {
+  relatedCaNames: string[];
+  students: CompanyStudentRow[];
+  urgentUpdates: CompanyUpdate[];
+}
+
+export interface KnowledgeItem {
+  id: string;
+  title: string;
+  category: KnowledgeCategory;
+  content: string;
+  aiSummary: string;
+  reusablePoint: string;
+  createdByCaId: string;
+  createdByCaName: string;
+  relatedStudentId?: string;
+  relatedStudentName?: string;
+  relatedCompanyId?: string;
+  relatedCompanyName?: string;
+  createdAt: string;
+}
+
+export interface CAOperationsSummary {
+  needsSupport: CAUser[];
+  performing: CAUser[];
+  stale: CAUser[];
+}
+
+export interface CompanyShareSummary {
+  unsharedCount: number;
+  todayShareCount: number;
+  hotCompanies: { companyId: string; companyName: string; studentCount: number }[];
+}
+
+export interface CAPerformanceMetrics {
+  ca: CAUser;
+  studentCount: number;
+  atRiskCount: number;
+  weeklyInterviewCount: number;
+  memoUpdateRate: number;
+  lastActivityAt: string;
+  unresponsiveCount: number;
+  avgTemperature: Temperature;
+  selectingCount: number;
+  offerCount: number;
+  aiComment: string;
+}
+
 export interface InterviewStatusItem {
   company: string;
   stage: string;
@@ -81,6 +221,11 @@ export interface CAUser {
   lastActivityAt: string;
   memo: string;
   performanceStatus: CAPerformanceStatus;
+  memoUpdateRate?: number;
+  unresponsiveCount?: number;
+  selectingCount?: number;
+  offerCount?: number;
+  aiComment?: string;
 }
 
 export interface Interview {
@@ -200,6 +345,7 @@ export interface PriorityStudentCard {
   lastContactLabel: string;
   needsExecutiveAttention: boolean;
   temperatureDroppedRecently: boolean;
+  priorityLayer: PriorityLayer;
 }
 
 export interface CAAttentionSummary {
@@ -250,6 +396,11 @@ export interface ExecutiveDashboardStats {
   todayCompanyUpdates: CompanyUpdate[];
   operationInsights: OperationInsight[];
   interventions: ExecutiveIntervention[];
+  activityFeed: ActivityLog[];
+  layeredAlerts: LayeredAlerts;
+  caOperationsSummary: CAOperationsSummary;
+  companyShareSummary: CompanyShareSummary;
+  knowledgeCandidates: KnowledgeItem[];
 }
 
 export interface CADashboardStats {
@@ -258,6 +409,9 @@ export interface CADashboardStats {
   atRiskStudents: Student[];
   actionStudents: Student[];
   supportSuggestions: string[];
+  performance: CAPerformanceMetrics;
+  riskStudentsCritical: Student[];
+  riskStudentsAttention: Student[];
 }
 
 export interface PriorityStudent {
@@ -346,4 +500,32 @@ export const PERFORMANCE_LABELS: Record<CAPerformanceStatus, string> = {
   excellent: "好調",
   good: "安定",
   needs_support: "要支援",
+};
+
+export const PRIORITY_LAYER_LABELS: Record<PriorityLayer, string> = {
+  critical: "今すぐ介入",
+  attention: "今日中に確認",
+  info: "確認のみ",
+};
+
+export const KNOWLEDGE_CATEGORY_LABELS: Record<KnowledgeCategory, string> = {
+  gakuchika: "ガクチカ深掘り",
+  self_analysis: "自己分析",
+  es_review: "ES添削",
+  interview: "面接対策",
+  company_intro: "企業紹介",
+  retention: "離脱防止",
+  student_follow: "学生フォロー",
+  ca_success: "CA成功事例",
+  company_strategy: "企業別対策",
+};
+
+export const ACTIVITY_TYPE_LABELS: Record<ActivityLogType, string> = {
+  interview_completed: "面談",
+  temperature_changed: "温度感",
+  es_reviewed: "ES",
+  company_update: "企業連絡",
+  no_reply: "未返信",
+  memo_updated: "メモ",
+  next_action_missing: "アクション",
 };

@@ -7,6 +7,8 @@ import { AnalysisCard, TagList } from "./AnalysisCard";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TemperatureTrend } from "@/components/shared/TemperatureTrend";
 import { TemperatureBadge } from "@/components/students/TemperatureBadge";
+import { classifyStudentLayer } from "@/lib/priority/layers";
+import { PriorityLayerBadge } from "@/components/shared/PriorityLayerBadge";
 import { hasTemperatureDropped } from "@/lib/temperature/score";
 import { cn } from "@/lib/utils/cn";
 
@@ -59,9 +61,14 @@ export function AnalysisPanel({
       )}
     >
       <div className="sticky top-0 z-[1] -mx-1 rounded-xl bg-background-subtle/95 px-1 py-3 backdrop-blur-sm">
-        <h3 className="text-sm font-semibold tracking-tight text-foreground">
-          判断サマリー
-        </h3>
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold tracking-tight text-foreground">
+            判断サマリー
+          </h3>
+          {student && (
+            <PriorityLayerBadge layer={classifyStudentLayer(student)} />
+          )}
+        </div>
         <p className="mt-0.5 text-xs text-foreground-muted">
           代表・CA向けの要点
         </p>

@@ -292,6 +292,22 @@ class FirebaseRepository implements DataRepository {
   async getTemperatureHistory(studentId: string) {
     return getMockRepository().getTemperatureHistory(studentId);
   }
+
+  async listActivityLogs() {
+    return getMockRepository().listActivityLogs();
+  }
+
+  async listCompanies() {
+    return getMockRepository().listCompanies();
+  }
+
+  async getCompany(id: string) {
+    return getMockRepository().getCompany(id);
+  }
+
+  async listKnowledge(category?: string) {
+    return getMockRepository().listKnowledge(category);
+  }
 }
 
 declare global {

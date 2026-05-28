@@ -1,0 +1,96 @@
+[
+  {
+    "id": "act-001",
+    "type": "interview_completed",
+    "title": "田中 美咲さん：初回面談完了",
+    "description": "論理的思考が強み。面接対策を重点的に。",
+    "relatedStudentId": "stu-001",
+    "relatedStudentName": "田中 美咲",
+    "relatedCaId": "ca-001",
+    "relatedCaName": "山田 健太",
+    "severity": "info",
+    "createdAt": "2026-05-28T01:12:00.000Z"
+  },
+  {
+    "id": "act-002",
+    "type": "temperature_changed",
+    "title": "山本 翔太さん：温度感が「高」から「中」に低下",
+    "description": "直近の返信ペースが落ちています",
+    "relatedStudentId": "stu-007",
+    "relatedStudentName": "山本 翔太",
+    "relatedCaId": "ca-002",
+    "relatedCaName": "佐藤 美穂",
+    "severity": "attention",
+    "createdAt": "2026-05-28T01:45:00.000Z"
+  },
+  {
+    "id": "act-003",
+    "type": "es_reviewed",
+    "title": "佐藤 美穂：ES添削完了",
+    "description": "鈴木 花子さんのES第2稿",
+    "relatedStudentId": "stu-002",
+    "relatedStudentName": "鈴木 花子",
+    "relatedCaId": "ca-002",
+    "relatedCaName": "佐藤 美穂",
+    "severity": "info",
+    "createdAt": "2026-05-28T02:03:00.000Z"
+  },
+  {
+    "id": "act-004",
+    "type": "company_update",
+    "title": "株式会社アクセンチュア：説明会日程を更新",
+    "description": "5/30までに一次面接の日程調整が必要",
+    "relatedCompanyId": "company-001",
+    "relatedCompanyName": "アクセンチュア",
+    "severity": "attention",
+    "createdAt": "2026-05-28T02:28:00.000Z"
+  },
+  {
+    "id": "act-005",
+    "type": "no_reply",
+    "title": "鈴木 花子さん：3日間返信なし",
+    "description": "担当 佐藤 美穂",
+    "relatedStudentId": "stu-002",
+    "relatedStudentName": "鈴木 花子",
+    "relatedCaId": "ca-002",
+    "relatedCaName": "佐藤 美穂",
+    "severity": "attention",
+    "createdAt": "2026-05-28T03:10:00.000Z"
+  },
+  {
+    "id": "act-006",
+    "type": "memo_updated",
+    "title": "高橋 誠：面談メモを更新",
+    "description": "中村 優子さんのカルテ",
+    "relatedStudentId": "stu-015",
+    "relatedStudentName": "中村 優子",
+    "relatedCaId": "ca-003",
+    "relatedCaName": "高橋 誠",
+    "severity": "info",
+    "createdAt": "2026-05-28T04:20:00.000Z"
+  },
+  {
+    "id": "act-007",
+    "type": "next_action_missing",
+    "title": "中村 優子さん：次回アクション未設定",
+    "description": "CAまたは代表で設定が必要です",
+    "relatedStudentId": "stu-015",
+    "relatedStudentName": "中村 優子",
+    "relatedCaId": "ca-003",
+    "relatedCaName": "高橋 誠",
+    "severity": "attention",
+    "createdAt": "2026-05-28T05:02:00.000Z"
+  },
+  {
+    "id": "act-008",
+    "type": "no_reply",
+    "title": "渡辺 大輔さん：10日間返信なし",
+    "description": "離脱リスクが高まっています",
+    "relatedStudentId": "stu-010",
+    "relatedStudentName": "渡辺 大輔",
+    "relatedCaId": "ca-001",
+    "relatedCaName": "山田 健太",
+    "severity": "critical",
+    "createdAt": "2026-05-28T05:30:00.000Z"
+  }
+]

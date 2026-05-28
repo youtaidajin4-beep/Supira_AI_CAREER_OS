@@ -1,0 +1,76 @@
+[
+  {
+    "id": "know-001",
+    "title": "ガクチカ深掘りで学生が前向きになった言い回し",
+    "category": "gakuchika",
+    "content": "「その時、一番難しかった判断は何でしたか？」と聞くと、学生が自分の軸を言語化しやすくなった。",
+    "aiSummary": "困難な判断を問うことで、学生の価値観を引き出す深掘りテクニック",
+    "reusablePoint": "面談の終盤に1問だけ入れると効果的",
+    "createdByCaId": "ca-001",
+    "createdByCaName": "山田 健太",
+    "relatedStudentId": "stu-001",
+    "relatedStudentName": "田中 美咲",
+    "createdAt": "2026-05-20T10:00:00.000Z"
+  },
+  {
+    "id": "know-002",
+    "title": "離脱寸前の学生を再エンゲージしたフォロー",
+    "category": "retention",
+    "content": "負担の少ない15分の短時間面談を提案し、成功体験を1つ一緒に振り返った。",
+    "aiSummary": "短時間面談＋小さな成功体験の再確認で温度感を回復",
+    "reusablePoint": "長期未返信の学生にはまず負担軽減から",
+    "createdByCaId": "ca-002",
+    "createdByCaName": "佐藤 美穂",
+    "relatedStudentId": "stu-010",
+    "relatedStudentName": "渡辺 大輔",
+    "createdAt": "2026-05-18T14:00:00.000Z"
+  },
+  {
+    "id": "know-003",
+    "title": "メルカリ紹介で刺さった説明の型",
+    "category": "company_intro",
+    "content": "「プロダクトを触った感想」と「改善したい1点」をセットで話すと、学生の目が変わった。",
+    "aiSummary": "プロダクト体験＋改善案のセットで志望動機が具体化",
+    "reusablePoint": "IT志望学生の企業紹介前に必ず体験させる",
+    "createdByCaId": "ca-002",
+    "createdByCaName": "佐藤 美穂",
+    "relatedCompanyId": "company-002",
+    "relatedCompanyName": "メルカリ",
+    "createdAt": "2026-05-15T09:00:00.000Z"
+  },
+  {
+    "id": "know-004",
+    "title": "面接対策：逆質問の質を上げる練習法",
+    "category": "interview",
+    "content": "企業研究シートの「気になる点」を3つ書かせ、面接で聞く練習をした。",
+    "aiSummary": "事前に3つの疑問点を書くことで逆質問の質が向上",
+    "reusablePoint": "選考直前の面談で実施",
+    "createdByCaId": "ca-003",
+    "createdByCaName": "高橋 誠",
+    "createdAt": "2026-05-12T11:00:00.000Z"
+  },
+  {
+    "id": "know-005",
+    "title": "ES添削：結論ファーストの直し方",
+    "category": "es_review",
+    "content": "1行目に結論、2行目に根拠、3行目に学びの構成に統一した。",
+    "aiSummary": "結論→根拠→学びの3行構成でESの読みやすさが向上",
+    "reusablePoint": "添削の最初に構成だけ直す",
+    "createdByCaId": "ca-001",
+    "createdByCaName": "山田 健太",
+    "createdAt": "2026-05-10T16:00:00.000Z"
+  },
+  {
+    "id": "know-006",
+    "title": "アクセンチュア：ケース面接の通過パターン",
+    "category": "company_strategy",
+    "content": "構造化→仮説→検証の順で話せる学生が通過しやすい。",
+    "aiSummary": "ケース面接は構造化→仮説→検証の順序が重要",
+    "reusablePoint": "ケース練習は最低2回実施",
+    "createdByCaId": "ca-001",
+    "createdByCaName": "山田 健太",
+    "relatedCompanyId": "company-001",
+    "relatedCompanyName": "アクセンチュア",
+    "createdAt": "2026-05-08T10:00:00.000Z"
+  }
+]

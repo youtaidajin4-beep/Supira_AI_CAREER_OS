@@ -13,7 +13,7 @@ export function CACard({ ca }: { ca: CAUser }) {
           ca.riskStudentCount > 0 && "border-l-[3px] border-l-warning"
         )}
       >
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-2">
           <div>
             <h3 className="font-semibold text-foreground">{ca.name}</h3>
             <p className="text-sm text-foreground-muted">{ca.role}</p>
@@ -22,28 +22,42 @@ export function CACard({ ca }: { ca: CAUser }) {
             {PERFORMANCE_LABELS[ca.performanceStatus]}
           </span>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-sm text-foreground-secondary">
+        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-1.5 text-sm text-foreground-secondary">
           <span>担当学生</span>
           <span className="text-right font-medium tabular-nums">{ca.studentCount}</span>
           <span>離脱リスク</span>
           <span className="text-right font-medium tabular-nums text-danger">
             {ca.riskStudentCount}
           </span>
-          <span>温度感「高」</span>
-          <span className="text-right font-medium tabular-nums">{ca.highTempCount}</span>
           <span>今週面談</span>
           <span className="text-right font-medium tabular-nums">
             {ca.weeklyInterviewCount}
           </span>
-          <span>未対応アラート</span>
-          <span className="text-right font-medium tabular-nums">{ca.openAlertCount}</span>
+          <span>記録更新率</span>
+          <span className="text-right font-medium tabular-nums">
+            {ca.memoUpdateRate ?? "—"}%
+          </span>
+          <span>未対応学生</span>
+          <span className="text-right font-medium tabular-nums">
+            {ca.unresponsiveCount ?? 0}
+          </span>
+          <span>選考中</span>
+          <span className="text-right font-medium tabular-nums">
+            {ca.selectingCount ?? 0}
+          </span>
+          <span>内定</span>
+          <span className="text-right font-medium tabular-nums">
+            {ca.offerCount ?? 0}
+          </span>
           <span>最終活動</span>
           <span className="text-right text-xs text-foreground-muted">
             {new Date(ca.lastActivityAt).toLocaleDateString("ja-JP")}
           </span>
         </div>
-        {ca.memo && (
-          <p className="mt-3 line-clamp-2 text-xs text-foreground-muted">{ca.memo}</p>
+        {ca.aiComment && (
+          <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-foreground-secondary">
+            {ca.aiComment}
+          </p>
         )}
       </Card>
     </Link>

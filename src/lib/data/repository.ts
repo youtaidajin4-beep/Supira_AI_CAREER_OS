@@ -9,8 +9,13 @@ import type {
   CreateInterviewInput,
   CreateStudentInput,
   DashboardStats,
+  ActivityLog,
+  Company,
+  CompanyDetail,
+  CompanyListItem,
   ExecutiveDashboardStats,
   Interview,
+  KnowledgeItem,
   Notification,
   Student,
   StudentFilters,
@@ -50,4 +55,8 @@ export interface DataRepository {
   getCADashboard(caId: string): Promise<CADashboardStats | null>;
   getStudentTimeline(studentId: string): Promise<TimelineEvent[]>;
   getTemperatureHistory(studentId: string): Promise<TemperatureSnapshot[]>;
+  listActivityLogs(): Promise<ActivityLog[]>;
+  listCompanies(): Promise<CompanyListItem[]>;
+  getCompany(id: string): Promise<CompanyDetail | null>;
+  listKnowledge(category?: string): Promise<KnowledgeItem[]>;
 }

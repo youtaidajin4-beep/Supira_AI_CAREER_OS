@@ -3,6 +3,7 @@ import {
   buildRecommendedAction,
   formatLastContact,
 } from "@/lib/operations/recommended-actions";
+import { classifyStudentLayer } from "@/lib/priority/layers";
 import { hasTemperatureDropped } from "@/lib/temperature/score";
 import { getTemperatureHistoryForStudent } from "@/lib/temperature/history";
 import type {
@@ -117,6 +118,7 @@ export function buildPriorityCards(
           student.temperature,
           history
         ),
+        priorityLayer: classifyStudentLayer(student),
       };
     });
 }

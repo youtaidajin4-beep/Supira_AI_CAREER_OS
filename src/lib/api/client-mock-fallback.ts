@@ -5,6 +5,7 @@ import alertsSeed from "@/data/seed/alerts.json";
 import aiAnalysisSeed from "@/data/seed/ai-analysis.json";
 import interviewsSeed from "@/data/seed/interviews.json";
 import { getMockRepository } from "@/lib/data/mock-repository";
+import { buildCAPerformanceMetrics, classifyCARiskStudents } from "@/lib/cas/performance";
 import type {
   AIAnalysis,
   Alert,
@@ -46,19 +47,27 @@ export const clientMockFallback = {
         const students = clone(studentsSeed as Student[]).filter(
           (s) => s.assignedCaId === id
         );
+        const enriched = {
+          ...ca,
+          studentCount: students.length,
+          riskStudentCount: students.filter((s) => s.temperature === "at_risk")
+            .length,
+        };
+        const performance = buildCAPerformanceMetrics(
+          enriched,
+          students,
+          interviewsSeed as Interview[]
+        );
+        const { critical, attention } = classifyCARiskStudents(students);
         return {
-          ca: {
-            ...ca,
-            studentCount: students.length,
-            riskStudentCount: students.filter((s) => s.temperature === "at_risk")
-              .length,
-          },
+          ca: enriched,
           students,
           atRiskStudents: students.filter((s) => s.temperature === "at_risk"),
           actionStudents: students.slice(0, 5),
-          supportSuggestions: [
-            "担当学生の温度感と次回アクションを確認してください（モック表示）",
-          ],
+          supportSuggestions: [performance.aiComment],
+          performance,
+          riskStudentsCritical: critical,
+          riskStudentsAttention: attention,
         };
       }),
 
@@ -78,6 +87,14 @@ export const clientMockFallback = {
 
   temperatureHistory: (studentId: string) =>
     mockRepo().getTemperatureHistory(studentId),
+
+  activityLogs: () => mockRepo().listActivityLogs(),
+
+  companies: () => mockRepo().listCompanies(),
+
+  company: (id: string) => mockRepo().getCompany(id),
+
+  knowledge: (category?: string) => mockRepo().listKnowledge(category),
 
   interviews: (studentId: string): Promise<Interview[]> =>
     mockRepo()

@@ -5,6 +5,8 @@ import notificationsSeed from "@/data/seed/notifications.json";
 import caUsersSeed from "@/data/seed/ca-users.json";
 import companyUpdatesSeed from "@/data/seed/company-updates.json";
 import alertsSeed from "@/data/seed/alerts.json";
+import companiesSeed from "@/data/seed/companies.json";
+import knowledgeItemsSeed from "@/data/seed/knowledge-items.json";
 import {
   buildCAAttentionSummaries,
   buildPriorityCards,
@@ -16,18 +18,37 @@ import {
   pendingCompanyUpdates,
 } from "@/lib/data/aggregates";
 import { mergeAlerts } from "@/lib/follow/alerts";
+import { mergeActivityLogs, getTodayActivityFeed } from "@/lib/activity/build-logs";
+import {
+  buildCAOperationsSummary,
+  buildCAPerformanceMetrics,
+  classifyCARiskStudents,
+  enrichCAWithPerformance,
+} from "@/lib/cas/performance";
+import {
+  buildCompanyDetail,
+  buildCompanyListItems,
+  buildCompanyShareSummary,
+} from "@/lib/companies/aggregates";
+import { pickKnowledgeCandidates } from "@/lib/knowledge/candidates";
 import { buildExecutiveInterventions } from "@/lib/operations/interventions";
 import { buildOperationInsights } from "@/lib/operations/insights";
+import { buildLayeredAlerts } from "@/lib/priority/layers";
 import { buildStudentTimeline } from "@/lib/timeline/build-events";
 import { getTemperatureHistoryForStudent } from "@/lib/temperature/history";
 import { isDateToday } from "@/lib/utils/dates";
 import type { AlertFilters, DataRepository } from "./repository";
 import type {
+  ActivityLog,
   AIAnalysis,
   Alert,
   CAUser,
   CADashboardStats,
+  Company,
+  CompanyDetail,
+  CompanyListItem,
   CompanyUpdate,
+  KnowledgeItem,
   CreateAnalysisInput,
   CreateCompanyUpdateInput,
   CreateInterviewInput,
@@ -63,6 +84,8 @@ class MockRepository implements DataRepository {
   private notifications: Map<string, Notification>;
   private cas: Map<string, CAUser>;
   private companyUpdates: Map<string, CompanyUpdate>;
+  private companies: Map<string, Company>;
+  private knowledgeItems: Map<string, KnowledgeItem>;
   private seedAlerts: Alert[];
 
   constructor() {
@@ -86,6 +109,12 @@ class MockRepository implements DataRepository {
       (companyUpdatesSeed as CompanyUpdate[]).map((u) => [u.id, clone(u)])
     );
     this.seedAlerts = clone(alertsSeed as Alert[]);
+    this.companies = new Map(
+      (companiesSeed as Company[]).map((c) => [c.id, clone(c)])
+    );
+    this.knowledgeItems = new Map(
+      (knowledgeItemsSeed as KnowledgeItem[]).map((k) => [k.id, clone(k)])
+    );
   }
 
   private allStudents(): Student[] {
@@ -102,9 +131,13 @@ class MockRepository implements DataRepository {
 
   private enrichedCAs(): CAUser[] {
     const alerts = this.getMergedAlerts();
-    return Array.from(this.cas.values()).map((ca) =>
-      enrichCAStats(ca, this.allStudents(), this.allInterviews(), alerts)
-    );
+    const students = this.allStudents();
+    const interviews = this.allInterviews();
+    return Array.from(this.cas.values()).map((ca) => {
+      const base = enrichCAStats(ca, students, interviews, alerts);
+      const metrics = buildCAPerformanceMetrics(base, students, interviews);
+      return enrichCAWithPerformance(base, metrics);
+    });
   }
 
   async listStudents(filters?: StudentFilters): Promise<Student[]> {
@@ -382,6 +415,20 @@ class MockRepository implements DataRepository {
       this.analysisMap(),
       interventions
     );
+    const allActivity = mergeActivityLogs(
+      undefined,
+      students,
+      interviews,
+      updates
+    );
+    const activityFeed = getTodayActivityFeed(allActivity);
+    const layeredAlerts = buildLayeredAlerts(
+      alerts,
+      students,
+      allActivity
+    );
+    const companyList = Array.from(this.companies.values());
+    const knowledgeAll = Array.from(this.knowledgeItems.values());
 
     return {
       totalStudents: students.length,
@@ -402,6 +449,13 @@ class MockRepository implements DataRepository {
       todayCompanyUpdates: clone(todayCompanyUpdates),
       operationInsights: clone(operationInsights),
       interventions: clone(interventions),
+      activityFeed: clone(activityFeed),
+      layeredAlerts: clone(layeredAlerts),
+      caOperationsSummary: clone(buildCAOperationsSummary(cas)),
+      companyShareSummary: clone(
+        buildCompanyShareSummary(companyList, students, updates)
+      ),
+      knowledgeCandidates: clone(pickKnowledgeCandidates(knowledgeAll)),
     };
   }
 
@@ -422,6 +476,53 @@ class MockRepository implements DataRepository {
     return clone(getTemperatureHistoryForStudent(student));
   }
 
+  async listActivityLogs(): Promise<ActivityLog[]> {
+    const students = this.allStudents();
+    const interviews = this.allInterviews();
+    const updates = Array.from(this.companyUpdates.values());
+    return clone(mergeActivityLogs(undefined, students, interviews, updates));
+  }
+
+  async listCompanies(): Promise<CompanyListItem[]> {
+    const students = this.allStudents();
+    const cas = this.enrichedCAs();
+    const updates = Array.from(this.companyUpdates.values());
+    return clone(
+      buildCompanyListItems(
+        Array.from(this.companies.values()),
+        students,
+        cas,
+        updates
+      )
+    );
+  }
+
+  async getCompany(id: string): Promise<CompanyDetail | null> {
+    const company = this.companies.get(id);
+    if (!company) return null;
+    return clone(
+      buildCompanyDetail(
+        company,
+        this.allStudents(),
+        this.enrichedCAs(),
+        Array.from(this.companyUpdates.values())
+      )
+    );
+  }
+
+  async listKnowledge(category?: string): Promise<KnowledgeItem[]> {
+    let list = Array.from(this.knowledgeItems.values());
+    if (category) {
+      list = list.filter((k) => k.category === category);
+    }
+    return clone(
+      list.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    );
+  }
+
   async getCADashboard(caId: string): Promise<CADashboardStats | null> {
     const ca = await this.getCA(caId);
     if (!ca) return null;
@@ -430,8 +531,14 @@ class MockRepository implements DataRepository {
     const actionStudents = buildPriorityStudents(students)
       .slice(0, 5)
       .map((p) => p.student);
+    const performance = buildCAPerformanceMetrics(
+      ca,
+      this.allStudents(),
+      this.allInterviews()
+    );
+    const { critical, attention } = classifyCARiskStudents(students);
 
-    const suggestions: string[] = [];
+    const suggestions: string[] = [performance.aiComment];
     if (ca.riskStudentCount > 0) {
       suggestions.push(
         `離脱リスク学生が${ca.riskStudentCount}名います。本日の優先フォローを設定してください。`
@@ -443,16 +550,15 @@ class MockRepository implements DataRepository {
     if (ca.performanceStatus === "needs_support") {
       suggestions.push("メモ更新・返信フォローのリズムを週次で確認することを推奨します。");
     }
-    if (suggestions.length === 0) {
-      suggestions.push("担当学生の温度感は概ね安定しています。内定者の承諾フォローを継続してください。");
-    }
-
     return {
       ca,
       students,
       atRiskStudents,
       actionStudents,
       supportSuggestions: suggestions,
+      performance,
+      riskStudentsCritical: critical,
+      riskStudentsAttention: attention,
     };
   }
 }

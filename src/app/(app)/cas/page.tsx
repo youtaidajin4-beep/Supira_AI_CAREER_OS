@@ -37,7 +37,7 @@ export default function CAListPage() {
 
   return (
     <>
-      <TopBar title="CA一覧" description={`${cas.length}名`} />
+      <TopBar title="CA管理" description={`${cas.length}名`} />
       <div className="min-h-0 flex-1 overflow-y-auto scroll-area p-6">
         <div className="mb-4 flex flex-wrap gap-3">
           <Input

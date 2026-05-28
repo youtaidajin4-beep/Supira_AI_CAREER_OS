@@ -16,18 +16,18 @@ const groupMeta: Record<
   { label: string; description: string; headerClass: string }
 > = {
   critical: {
-    label: "今日の優先",
-    description: "今すぐ対応が必要な項目です",
+    label: "Critical — 今すぐ介入",
+    description: "離脱リスク・未対応・重要企業連絡など",
     headerClass: "text-danger",
   },
   warning: {
-    label: "要フォロー",
-    description: "早めに確認・フォローしてください",
+    label: "Attention — 今日中に確認",
+    description: "温度感低下・記録未更新・フォロー遅延など",
     headerClass: "text-warning",
   },
   info: {
-    label: "情報",
-    description: "把握しておくとよい通知です",
+    label: "Info — 確認のみ",
+    description: "面談完了・メモ更新・共有済みなど",
     headerClass: "text-accent",
   },
 };
