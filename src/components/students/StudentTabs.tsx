@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { AIAnalysis, Student } from "@/lib/data/types";
+import type { AIAnalysis, Student, TemperatureSnapshot } from "@/lib/data/types";
 import { cn } from "@/lib/utils/cn";
 import { AnalysisPanel } from "@/components/ai/AnalysisPanel";
 import { BasicInfoTab } from "./tabs/BasicInfoTab";
@@ -10,10 +10,12 @@ import { EsTab } from "./tabs/EsTab";
 import { InterviewStatusTab } from "./tabs/InterviewStatusTab";
 import { ContactMemoTab } from "./tabs/ContactMemoTab";
 import { NextActionTab } from "./tabs/NextActionTab";
+import { StudentTimeline } from "./StudentTimeline";
 
 const TABS = [
   { id: "basic", label: "基本情報" },
   { id: "interviews", label: "面談履歴" },
+  { id: "timeline", label: "伴走タイムライン" },
   { id: "ai", label: "AI分析" },
   { id: "es", label: "ES/ガクチカ" },
   { id: "interview-status", label: "選考状況" },
@@ -26,6 +28,7 @@ export type TabId = (typeof TABS)[number]["id"];
 interface StudentTabsProps {
   student: Student;
   analysis: AIAnalysis | null;
+  temperatureHistory?: TemperatureSnapshot[];
   onStudentUpdate: (student: Student) => void;
   interviewRefreshKey?: number;
   onAnalysisSaved?: (analysis: AIAnalysis) => void;
@@ -34,6 +37,7 @@ interface StudentTabsProps {
 export function StudentTabs({
   student,
   analysis,
+  temperatureHistory = [],
   onStudentUpdate,
   interviewRefreshKey = 0,
   onAnalysisSaved,
@@ -72,6 +76,9 @@ export function StudentTabs({
             onAnalysisSaved={onAnalysisSaved}
           />
         )}
+        {activeTab === "timeline" && (
+          <StudentTimeline studentId={student.id} />
+        )}
         {activeTab === "ai" && (
           <>
             <div className="lg:hidden">
@@ -79,6 +86,7 @@ export function StudentTabs({
                 analysis={analysis}
                 student={student}
                 compact
+                temperatureHistory={temperatureHistory}
               />
             </div>
             <div className="hidden p-8 lg:block">

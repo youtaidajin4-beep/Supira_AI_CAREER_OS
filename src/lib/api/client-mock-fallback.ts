@@ -71,26 +71,13 @@ export const clientMockFallback = {
     mockRepo().listAlerts().catch(() => clone(alertsSeed as Alert[])),
 
   executiveDashboard: (): Promise<ExecutiveDashboardStats> =>
-    mockRepo().getExecutiveDashboard().catch(async () => {
-      const repo = mockRepo();
-      return {
-        totalStudents: (studentsSeed as Student[]).length,
-        totalCAs: (caUsersSeed as CAUser[]).length,
-        atRiskCount: 0,
-        weeklyInterviews: 0,
-        unresponsiveCount: 0,
-        selectingCount: 0,
-        offerCount: 0,
-        criticalAlerts: [],
-        priorityStudents: [],
-        caSummaries: await repo.listCAs().catch(() =>
-          clone(caUsersSeed as CAUser[])
-        ),
-        pendingCompanyUpdates: (companyUpdatesSeed as CompanyUpdate[]).filter(
-          (u) => u.shareStatus === "unshared"
-        ),
-      };
-    }),
+    mockRepo().getExecutiveDashboard(),
+
+  studentTimeline: (studentId: string) =>
+    mockRepo().getStudentTimeline(studentId),
+
+  temperatureHistory: (studentId: string) =>
+    mockRepo().getTemperatureHistory(studentId),
 
   interviews: (studentId: string): Promise<Interview[]> =>
     mockRepo()

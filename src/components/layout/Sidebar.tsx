@@ -10,16 +10,18 @@ import {
   Building2,
   Bell,
   Settings,
+  FileBarChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const navItems = [
-  { href: "/", label: "ダッシュボード", icon: LayoutDashboard },
-  { href: "/cas", label: "CA一覧", icon: UserCog },
-  { href: "/students", label: "学生一覧", icon: Users },
+  { href: "/", label: "オペレーションダッシュボード", icon: LayoutDashboard },
+  { href: "/cas", label: "CA管理", icon: UserCog },
+  { href: "/students", label: "学生管理", icon: Users },
   { href: "/company-updates", label: "企業連絡", icon: Building2 },
-  { href: "/alerts", label: "フォローアラート", icon: Bell },
+  { href: "/alerts", label: "要注意アラート", icon: Bell },
   { href: "/interviews/upload", label: "面談AI", icon: Mic },
+  { href: "/reports", label: "レポート", icon: FileBarChart },
   { href: "/settings", label: "設定", icon: Settings },
 ];
 
@@ -77,7 +79,7 @@ export function Sidebar() {
                 )}
                 strokeWidth={active ? 2 : 1.75}
               />
-              {label}
+              <span className="leading-snug">{label}</span>
             </Link>
           );
         })}

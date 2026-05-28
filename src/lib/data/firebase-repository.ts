@@ -284,6 +284,14 @@ class FirebaseRepository implements DataRepository {
   async getCADashboard(caId: string): Promise<CADashboardStats | null> {
     return getMockRepository().getCADashboard(caId);
   }
+
+  async getStudentTimeline(studentId: string) {
+    return getMockRepository().getStudentTimeline(studentId);
+  }
+
+  async getTemperatureHistory(studentId: string) {
+    return getMockRepository().getTemperatureHistory(studentId);
+  }
 }
 
 declare global {

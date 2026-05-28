@@ -1,31 +1,31 @@
 import { CalendarClock, Sparkles } from "lucide-react";
-import type { Alert, CompanyUpdate, PriorityStudent } from "@/lib/data/types";
+import type { Alert, CompanyUpdate } from "@/lib/data/types";
 import { cn } from "@/lib/utils/cn";
 
 interface TodayWorkHeroProps {
   dateLabel: string;
-  priorityStudents: PriorityStudent[];
+  priorityCount: number;
+  interventionCount: number;
   criticalAlerts: Alert[];
   pendingCompanyUpdates: CompanyUpdate[];
 }
 
 export function TodayWorkHero({
   dateLabel,
-  priorityStudents,
+  priorityCount,
+  interventionCount,
   criticalAlerts,
   pendingCompanyUpdates,
 }: TodayWorkHeroProps) {
   const taskCount =
-    criticalAlerts.length +
-    priorityStudents.length +
-    pendingCompanyUpdates.length;
+    interventionCount + priorityCount + pendingCompanyUpdates.length;
 
   return (
     <section
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-accent/20",
-        "bg-gradient-to-br from-accent via-accent to-accent-hover",
-        "px-6 py-6 text-white shadow-md sm:px-8 sm:py-7"
+        "relative overflow-hidden rounded-2xl border border-accent/15",
+        "bg-gradient-to-br from-accent/90 via-accent to-accent-hover/95",
+        "px-6 py-6 text-white shadow-sm sm:px-8 sm:py-7"
       )}
     >
       <div
@@ -39,10 +39,10 @@ export function TodayWorkHero({
             <span className="text-sm font-medium">{dateLabel}</span>
           </div>
           <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-[1.75rem]">
-            今日やるべき業務
+            オペレーションセンター
           </h2>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/85">
-            離脱リスク・未対応・未共有の企業連絡を優先順に整理しました。上から順に確認してください。
+            優先学生・CA注意・未共有企業・代表介入を上から順に確認してください。
           </p>
         </div>
         <div className="flex shrink-0 gap-3">
@@ -52,9 +52,9 @@ export function TodayWorkHero({
             highlight
           />
           <HeroStat
-            value={criticalAlerts.length}
-            label="緊急"
-            warn={criticalAlerts.length > 0}
+            value={interventionCount}
+            label="介入候補"
+            warn={interventionCount > 0}
           />
           <HeroStat
             value={pendingCompanyUpdates.length}

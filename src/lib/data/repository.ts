@@ -14,6 +14,8 @@ import type {
   Notification,
   Student,
   StudentFilters,
+  TemperatureSnapshot,
+  TimelineEvent,
 } from "./types";
 
 export interface AlertFilters {
@@ -46,4 +48,6 @@ export interface DataRepository {
   listAlerts(filters?: AlertFilters): Promise<Alert[]>;
   getExecutiveDashboard(): Promise<ExecutiveDashboardStats>;
   getCADashboard(caId: string): Promise<CADashboardStats | null>;
+  getStudentTimeline(studentId: string): Promise<TimelineEvent[]>;
+  getTemperatureHistory(studentId: string): Promise<TemperatureSnapshot[]>;
 }

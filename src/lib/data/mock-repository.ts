@@ -6,6 +6,8 @@ import caUsersSeed from "@/data/seed/ca-users.json";
 import companyUpdatesSeed from "@/data/seed/company-updates.json";
 import alertsSeed from "@/data/seed/alerts.json";
 import {
+  buildCAAttentionSummaries,
+  buildPriorityCards,
   buildPriorityStudents,
   countOffers,
   countSelecting,
@@ -14,6 +16,10 @@ import {
   pendingCompanyUpdates,
 } from "@/lib/data/aggregates";
 import { mergeAlerts } from "@/lib/follow/alerts";
+import { buildExecutiveInterventions } from "@/lib/operations/interventions";
+import { buildOperationInsights } from "@/lib/operations/insights";
+import { buildStudentTimeline } from "@/lib/timeline/build-events";
+import { getTemperatureHistoryForStudent } from "@/lib/temperature/history";
 import { isDateToday } from "@/lib/utils/dates";
 import type { AlertFilters, DataRepository } from "./repository";
 import type {
@@ -32,6 +38,8 @@ import type {
   Notification,
   Student,
   StudentFilters,
+  TemperatureSnapshot,
+  TimelineEvent,
 } from "./types";
 
 function clone<T>(data: T): T {
@@ -327,14 +335,53 @@ class MockRepository implements DataRepository {
     return clone(list);
   }
 
+  private analysisMap(): Map<string, import("./types").AIAnalysis> {
+    const map = new Map<string, import("./types").AIAnalysis>();
+    for (const a of this.analyses.values()) {
+      const existing = map.get(a.studentId);
+      if (
+        !existing ||
+        new Date(a.createdAt) > new Date(existing.createdAt)
+      ) {
+        map.set(a.studentId, a);
+      }
+    }
+    return map;
+  }
+
   async getExecutiveDashboard(): Promise<ExecutiveDashboardStats> {
     const students = this.allStudents();
     const interviews = this.allInterviews();
     const alerts = this.getMergedAlerts();
     const updates = Array.from(this.companyUpdates.values());
+    const cas = this.enrichedCAs();
     const weeklyInterviews = interviews.filter(
       (i) => Date.now() - new Date(i.createdAt).getTime() <= 7 * 86400000
     ).length;
+
+    const caAttentionList = buildCAAttentionSummaries(
+      cas,
+      students,
+      interviews
+    );
+    const pending = pendingCompanyUpdates(updates);
+    const todayCompanyUpdates = updates.filter(
+      (u) =>
+        isDateToday(u.createdAt) ||
+        (u.shareStatus === "unshared" && u.priority === "high")
+    );
+    const operationInsights = buildOperationInsights(students, cas);
+    const interventions = buildExecutiveInterventions(
+      students,
+      cas,
+      caAttentionList,
+      updates
+    );
+    const priorityCards = buildPriorityCards(
+      students,
+      this.analysisMap(),
+      interventions
+    );
 
     return {
       totalStudents: students.length,
@@ -348,9 +395,31 @@ class MockRepository implements DataRepository {
         alerts.filter((a) => a.severity === "critical").slice(0, 8)
       ),
       priorityStudents: clone(buildPriorityStudents(students).slice(0, 10)),
-      caSummaries: clone(this.enrichedCAs()),
-      pendingCompanyUpdates: clone(pendingCompanyUpdates(updates)),
+      priorityCards: clone(priorityCards),
+      caSummaries: clone(cas),
+      caAttentionList: clone(caAttentionList),
+      pendingCompanyUpdates: clone(pending),
+      todayCompanyUpdates: clone(todayCompanyUpdates),
+      operationInsights: clone(operationInsights),
+      interventions: clone(interventions),
     };
+  }
+
+  async getStudentTimeline(studentId: string): Promise<TimelineEvent[]> {
+    const student = this.students.get(studentId);
+    if (!student) return [];
+    const history = getTemperatureHistoryForStudent(student);
+    return clone(
+      buildStudentTimeline(student, this.allInterviews(), history)
+    );
+  }
+
+  async getTemperatureHistory(
+    studentId: string
+  ): Promise<TemperatureSnapshot[]> {
+    const student = this.students.get(studentId);
+    if (!student) return [];
+    return clone(getTemperatureHistoryForStudent(student));
   }
 
   async getCADashboard(caId: string): Promise<CADashboardStats | null> {

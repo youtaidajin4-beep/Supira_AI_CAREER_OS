@@ -59,6 +59,8 @@ export interface Student {
   unreadDays: number;
   nextAction: string;
   nextActionDue: string;
+  nextActionAssignee?: "ca" | "executive";
+  nextActionStatus?: "pending" | "done";
   riskReason: string;
   interviewDeclined: boolean;
   interviewCancelled: boolean;
@@ -165,6 +167,72 @@ export interface DashboardStats {
   recentStudents: Student[];
 }
 
+export type TimelineEventType =
+  | "interview"
+  | "memo"
+  | "contact"
+  | "temperature"
+  | "selection"
+  | "follow"
+  | "status";
+
+export interface TimelineEvent {
+  id: string;
+  studentId: string;
+  type: TimelineEventType;
+  title: string;
+  description: string;
+  occurredAt: string;
+  severity?: AlertSeverity;
+}
+
+export interface TemperatureSnapshot {
+  studentId: string;
+  temperature: Temperature;
+  recordedAt: string;
+}
+
+export interface PriorityStudentCard {
+  student: Student;
+  score: number;
+  reasons: string[];
+  recommendedAction: string;
+  lastContactLabel: string;
+  needsExecutiveAttention: boolean;
+  temperatureDroppedRecently: boolean;
+}
+
+export interface CAAttentionSummary {
+  ca: CAUser;
+  studentCount: number;
+  atRiskCount: number;
+  staleInterviewCount: number;
+  interviewUpdateRate: number;
+  weeklyInterviewCount: number;
+  delayedReplyCount: number;
+  highTempCount: number;
+  aiComment: string;
+}
+
+export interface OperationInsight {
+  id: string;
+  category: string;
+  message: string;
+  severity: AlertSeverity;
+}
+
+export interface ExecutiveIntervention {
+  id: string;
+  targetType: "student" | "ca";
+  targetId: string;
+  targetName: string;
+  title: string;
+  description: string;
+  severity: AlertSeverity;
+  relatedCaId?: string;
+  relatedStudentId?: string;
+}
+
 export interface ExecutiveDashboardStats {
   totalStudents: number;
   totalCAs: number;
@@ -175,8 +243,13 @@ export interface ExecutiveDashboardStats {
   offerCount: number;
   criticalAlerts: Alert[];
   priorityStudents: PriorityStudent[];
+  priorityCards: PriorityStudentCard[];
   caSummaries: CAUser[];
+  caAttentionList: CAAttentionSummary[];
   pendingCompanyUpdates: CompanyUpdate[];
+  todayCompanyUpdates: CompanyUpdate[];
+  operationInsights: OperationInsight[];
+  interventions: ExecutiveIntervention[];
 }
 
 export interface CADashboardStats {

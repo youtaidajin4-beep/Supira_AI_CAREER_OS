@@ -5,6 +5,7 @@ import { TemperatureBadge } from "./TemperatureBadge";
 import { Avatar } from "@/components/ui/avatar";
 import { EntityLink } from "@/components/shared/EntityLink";
 import { FollowSummary } from "@/components/shared/FollowSummary";
+import { cn } from "@/lib/utils/cn";
 
 interface StudentKarteProps {
   student: Student;
@@ -43,11 +44,23 @@ export function StudentKarte({ student }: StudentKarteProps) {
                 <Calendar className="h-3 w-3" />
                 最終接触 {formatDate(student.lastContactAt)}
               </span>
-              {student.nextAction && (
-                <span className="rounded-md bg-accent-subtle/60 px-2 py-0.5 text-foreground-secondary">
+              {student.nextAction ? (
+                <span
+                  className={cn(
+                    "rounded-md px-2 py-0.5 text-foreground-secondary",
+                    student.nextActionStatus === "done"
+                      ? "bg-success-subtle/80"
+                      : "bg-accent-subtle/60"
+                  )}
+                >
                   次: {student.nextAction}
                   {student.nextActionDue &&
                     `（${formatDate(student.nextActionDue)}まで）`}
+                  {student.nextActionAssignee === "executive" && " · 代表担当"}
+                </span>
+              ) : (
+                <span className="rounded-md border border-l-[3px] border-l-warning border-border bg-warning-subtle/40 px-2 py-0.5 text-warning">
+                  次回アクション未設定
                 </span>
               )}
             </div>

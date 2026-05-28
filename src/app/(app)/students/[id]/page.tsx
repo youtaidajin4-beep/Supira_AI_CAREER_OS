@@ -11,7 +11,7 @@ import { buttonClass } from "@/components/ui/button";
 import { ListItemSkeleton } from "@/components/ui/skeleton";
 import { clientMockFallback } from "@/lib/api/client-mock-fallback";
 import { fetchJson } from "@/lib/api/fetch-json";
-import type { AIAnalysis, Student } from "@/lib/data/types";
+import type { AIAnalysis, Student, TemperatureSnapshot } from "@/lib/data/types";
 
 export default function StudentDetailPage({
   params,
@@ -22,10 +22,13 @@ export default function StudentDetailPage({
   const [student, setStudent] = useState<Student | null>(null);
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
   const [interviewRefreshKey, setInterviewRefreshKey] = useState(0);
+  const [temperatureHistory, setTemperatureHistory] = useState<
+    TemperatureSnapshot[]
+  >([]);
 
   useEffect(() => {
     void (async () => {
-      const [studentData, analysisData] = await Promise.all([
+      const [studentData, analysisData, tempData] = await Promise.all([
         fetchJson<Student | null>(`/api/students/${id}`, {
           fallback: () => clientMockFallback.student(id),
           allowNull: true,
@@ -34,9 +37,16 @@ export default function StudentDetailPage({
           fallback: () => clientMockFallback.analysis(id),
           allowNull: true,
         }),
+        fetchJson<TemperatureSnapshot[]>(
+          `/api/students/${id}/temperature`,
+          {
+            fallback: () => clientMockFallback.temperatureHistory(id),
+          }
+        ),
       ]);
       if (studentData && !("error" in studentData)) setStudent(studentData);
       setAnalysis(analysisData?.id ? analysisData : null);
+      setTemperatureHistory(Array.isArray(tempData) ? tempData : []);
     })();
   }, [id]);
 
@@ -80,6 +90,7 @@ export default function StudentDetailPage({
           <StudentTabs
             student={student}
             analysis={analysis}
+            temperatureHistory={temperatureHistory}
             onStudentUpdate={setStudent}
             interviewRefreshKey={interviewRefreshKey}
             onAnalysisSaved={(saved) => {
@@ -105,7 +116,11 @@ export default function StudentDetailPage({
             </Link>
           </div>
           <div className="min-h-0 flex-1 overflow-hidden">
-            <AnalysisPanel analysis={analysis} student={student} />
+            <AnalysisPanel
+              analysis={analysis}
+              student={student}
+              temperatureHistory={temperatureHistory}
+            />
           </div>
         </div>
       </div>
