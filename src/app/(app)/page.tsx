@@ -1,39 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { ExecutiveOverviewSection } from "@/components/executive/ExecutiveOverviewSection";
-import { DashboardSection } from "@/components/dashboard/DashboardSection";
-import { DashboardSummaryBar } from "@/components/dashboard/DashboardSummaryBar";
-import { PriorityStudentCard } from "@/components/operations/PriorityStudentCard";
-import { CAAttentionCard } from "@/components/operations/CAAttentionCard";
+import { ExecutiveKpiBar } from "@/components/executive/ExecutiveKpiBar";
+import { ExecutiveActionList } from "@/components/executive/ExecutiveActionList";
+import { ExecutiveJudgmentRail } from "@/components/executive/ExecutiveJudgmentRail";
+import { ExecutiveCAStrip } from "@/components/executive/ExecutiveCAStrip";
+import { ExecutiveAlertsGrid } from "@/components/executive/ExecutiveAlertsGrid";
 import { CompanyActionCard } from "@/components/operations/CompanyActionCard";
-import { OperationInsightPanel } from "@/components/operations/OperationInsightPanel";
-import { InterventionPanel } from "@/components/operations/InterventionPanel";
-import { ActivityFeed } from "@/components/operations/ActivityFeed";
-import { LayeredAlertsPanel } from "@/components/operations/LayeredAlertsPanel";
-import { CAOperationsSummaryPanel } from "@/components/operations/CAOperationsSummaryPanel";
-import { CompanyShareSummaryPanel } from "@/components/operations/CompanyShareSummaryPanel";
-import { KnowledgeCandidatesPanel } from "@/components/operations/KnowledgeCandidatesPanel";
 import { AddStudentModal } from "@/components/students/AddStudentModal";
 import { buttonClass } from "@/components/ui/button";
 import { clientMockFallback } from "@/lib/api/client-mock-fallback";
 import { fetchJson } from "@/lib/api/fetch-json";
 import type { ExecutiveDashboardStats } from "@/lib/data/types";
-
-function DashboardSkeleton() {
-  return (
-    <div className="mx-auto max-w-6xl animate-pulse space-y-4 p-6">
-      <div className="h-8 rounded bg-background-muted" />
-      <div className="h-64 rounded-xl bg-background-muted" />
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="h-48 rounded-xl bg-background-muted lg:col-span-2" />
-        <div className="h-48 rounded-xl bg-background-muted" />
-      </div>
-    </div>
-  );
-}
 
 export default function DashboardPage() {
   const [data, setData] = useState<ExecutiveDashboardStats | null>(null);
@@ -59,16 +41,6 @@ export default function DashboardPage() {
     weekday: "short",
   });
 
-  const caAttentionSorted = data
-    ? [...data.caAttentionList].sort((a, b) => {
-        const score = (s: typeof a) =>
-          (s.ca.performanceStatus === "needs_support" ? 10 : 0) +
-          s.delayedReplyCount * 2 +
-          (100 - s.interviewUpdateRate) / 20;
-        return score(b) - score(a);
-      })
-    : [];
-
   const prioritySorted = data
     ? [...data.priorityCards].sort((a, b) => {
         const layerOrder = { critical: 0, attention: 1, info: 2 };
@@ -76,10 +48,17 @@ export default function DashboardPage() {
       })
     : [];
 
+  const alertCount = data
+    ? data.layeredAlerts.critical.length +
+      data.layeredAlerts.attention.length +
+      data.layeredAlerts.info.length
+    : 0;
+
   return (
     <>
       <TopBar
-        title="オペレーションセンター"
+        title="代表ダッシュボード"
+        description="20名のCA・学生・企業を俯瞰する司令塔"
         actions={
           <button
             type="button"
@@ -91,92 +70,110 @@ export default function DashboardPage() {
           </button>
         }
       />
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain scroll-area bg-background-subtle">
+      <div className="min-h-0 flex-1 overflow-y-auto scroll-area bg-[#f3f4f6]">
         {!data ? (
-          <DashboardSkeleton />
+          <div className="mx-auto max-w-6xl animate-pulse space-y-4 p-6">
+            <div className="h-24 rounded-2xl bg-background-muted" />
+            <div className="h-80 rounded-2xl bg-background-muted" />
+          </div>
         ) : (
-          <div className="mx-auto max-w-6xl space-y-5 p-5 sm:p-6">
-            <DashboardSummaryBar
+          <div className="mx-auto max-w-6xl space-y-6 p-5 sm:p-6">
+            <ExecutiveKpiBar
               dateLabel={today}
-              items={[
-                { label: "優先学生", value: data.priorityCards.length, highlight: true },
-                { label: "介入", value: data.interventions.length },
-                { label: "未共有", value: data.pendingCompanyUpdates.length },
-                { label: "離脱リスク", value: data.atRiskCount },
+              kpis={[
+                {
+                  label: "優先学生",
+                  value: prioritySorted.length,
+                  emphasis: "primary",
+                },
+                {
+                  label: "代表介入",
+                  value: data.interventions.length,
+                  emphasis: "warning",
+                },
+                {
+                  label: "未共有",
+                  value: data.pendingCompanyUpdates.length,
+                  emphasis: "warning",
+                },
+                {
+                  label: "離脱リスク",
+                  value: data.atRiskCount,
+                  emphasis: "danger",
+                },
               ]}
             />
 
-            <div className="grid gap-5 lg:grid-cols-3">
-              <div className="space-y-5 lg:col-span-2">
-                <DashboardSection
-                  title="優先学生"
-                  href="/students"
-                  badge={prioritySorted.length}
-                >
-                  {prioritySorted.length === 0 ? (
-                    <p className="text-sm text-foreground-muted">
-                      本日の優先候補はありません
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {prioritySorted.map((card) => (
-                        <PriorityStudentCard key={card.student.id} card={card} />
-                      ))}
-                    </div>
-                  )}
-                </DashboardSection>
-
-                <LayeredAlertsPanel alerts={data.layeredAlerts} />
+            <div className="grid gap-6 lg:grid-cols-5">
+              <div className="executive-panel lg:col-span-3">
+                <div className="border-b border-border-subtle px-5 py-4">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    今日やること
+                  </h2>
+                  <p className="mt-0.5 text-xs text-foreground-muted">
+                    上から順に対応 · {prioritySorted.length}名
+                  </p>
+                </div>
+                <ExecutiveActionList cards={prioritySorted} />
               </div>
 
-              <aside className="space-y-5">
-                <DashboardSection title="今日の動き" href="/activity-feed">
-                  <ActivityFeed logs={data.activityFeed} compact />
-                </DashboardSection>
-                <InterventionPanel interventions={data.interventions} />
-              </aside>
+              <div className="lg:col-span-2">
+                <ExecutiveJudgmentRail
+                  interventions={data.interventions}
+                  companySummary={data.companyShareSummary}
+                  insights={data.operationInsights}
+                  layeredAlertCount={alertCount}
+                />
+              </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-3">
-              <CAOperationsSummaryPanel summary={data.caOperationsSummary} />
-              <CompanyShareSummaryPanel summary={data.companyShareSummary} />
-              <OperationInsightPanel insights={data.operationInsights} />
-            </div>
+            <ExecutiveAlertsGrid alerts={data.layeredAlerts} />
 
-            <DashboardSection
-              title="企業連絡（今日共有）"
-              href="/company-updates"
-              badge={data.todayCompanyUpdates.length}
-            >
-              {data.todayCompanyUpdates.length === 0 ? (
-                <p className="text-sm text-foreground-muted">候補なし</p>
-              ) : (
-                <div className="flex gap-3 overflow-x-auto pb-1 scroll-area">
+            <section>
+              <div className="mb-3 flex items-end justify-between">
+                <div>
+                  <h2 className="text-sm font-semibold text-foreground">
+                    CAチームの状態
+                  </h2>
+                  <p className="text-xs text-foreground-muted">
+                    フォローが必要な担当者
+                  </p>
+                </div>
+                <Link href="/cas" className="text-xs font-medium text-accent hover:underline">
+                  CA管理へ →
+                </Link>
+              </div>
+              <ExecutiveCAStrip summaries={data.caAttentionList} />
+            </section>
+
+            {data.todayCompanyUpdates.length > 0 && (
+              <section className="executive-panel p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    今日共有する企業連絡
+                  </h2>
+                  <Link
+                    href="/company-updates"
+                    className="text-xs font-medium text-accent hover:underline"
+                  >
+                    企業連絡へ →
+                  </Link>
+                </div>
+                <div className="flex gap-4 overflow-x-auto pb-1 scroll-area">
                   {data.todayCompanyUpdates.map((u) => (
                     <CompanyActionCard key={u.id} update={u} />
                   ))}
                 </div>
-              )}
-            </DashboardSection>
+              </section>
+            )}
 
-            <div className="grid gap-5 lg:grid-cols-2">
-              <DashboardSection title="CA注意" href="/cas">
-                <div className="space-y-2">
-                  {caAttentionSorted.slice(0, 3).map((summary) => (
-                    <CAAttentionCard key={summary.ca.id} summary={summary} />
-                  ))}
-                </div>
-              </DashboardSection>
-              <KnowledgeCandidatesPanel items={data.knowledgeCandidates} />
-            </div>
-
-            <div className="rounded-xl border border-border/70 bg-background">
+            <div className="executive-panel overflow-hidden">
               <button
                 type="button"
                 onClick={() => setOverviewOpen((o) => !o)}
-                className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold hover:bg-background-subtle/50 sm:px-5"
+                className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold hover:bg-white/50"
               >
-                組織概況
+                組織概況（KPI）
                 {overviewOpen ? (
                   <ChevronUp className="h-4 w-4 text-foreground-muted" />
                 ) : (
@@ -184,7 +181,7 @@ export default function DashboardPage() {
                 )}
               </button>
               {overviewOpen && (
-                <div className="border-t border-border-subtle p-4 sm:p-5">
+                <div className="border-t border-border-subtle p-5">
                   <ExecutiveOverviewSection
                     stats={data}
                     cas={data.caSummaries}
