@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { CACard } from "@/components/cas/CACard";
 import { CASummaryStrip } from "@/components/cas/CASummaryStrip";
+import { CAStatusLegend } from "@/components/cas/CAStatusLegend";
 import { clientMockFallback } from "@/lib/api/client-mock-fallback";
 import { fetchJson } from "@/lib/api/fetch-json";
 import type { CAUser, CAPerformanceStatus } from "@/lib/data/types";
@@ -12,11 +13,19 @@ import { cn } from "@/lib/utils/cn";
 
 type FilterKey = "all" | CAPerformanceStatus;
 
-const filters: { key: FilterKey; label: string }[] = [
-  { key: "all", label: "すべて" },
-  { key: "needs_support", label: "要支援" },
-  { key: "good", label: "安定" },
-  { key: "excellent", label: "好調" },
+const filters: {
+  key: FilterKey;
+  label: string;
+  activeClass: string;
+}[] = [
+  { key: "all", label: "すべて", activeClass: "bg-foreground text-white" },
+  {
+    key: "needs_support",
+    label: "要支援",
+    activeClass: "bg-warning text-white",
+  },
+  { key: "good", label: "安定", activeClass: "bg-accent text-white" },
+  { key: "excellent", label: "好調", activeClass: "bg-success text-white" },
 ];
 
 export default function CAListPage() {
@@ -46,25 +55,34 @@ export default function CAListPage() {
     });
   }, [cas, query, filter]);
 
+  const needsSupportList = filtered.filter(
+    (c) => c.performanceStatus === "needs_support"
+  );
+  const otherList = filtered.filter(
+    (c) => c.performanceStatus !== "needs_support"
+  );
+  const showGrouped = filter === "all" && needsSupportList.length > 0;
+
   return (
     <>
       <TopBar
         title="CA管理"
-        description="チームの稼働・リスク・フォロー品質を把握"
+        description="チームの稼働・リスク・フォロー品質をひと目で把握"
       />
-      <div className="min-h-0 flex-1 overflow-y-auto scroll-area bg-[#f3f4f6]">
-        <div className="mx-auto max-w-6xl space-y-6 p-5 sm:p-6">
+      <div className="min-h-0 flex-1 overflow-y-auto scroll-area ca-page-bg">
+        <div className="mx-auto max-w-6xl space-y-5 p-5 sm:p-6">
           <CASummaryStrip cas={cas} />
+          <CAStatusLegend />
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-xl border border-border-subtle bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="relative max-w-sm flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
               <input
                 type="search"
-                placeholder="CA名で検索"
+                placeholder="CA名で検索..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="h-10 w-full rounded-lg border border-border bg-white pl-9 pr-3 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                className="h-10 w-full rounded-lg border border-border bg-background-subtle/50 pl-9 pr-3 text-sm focus:border-accent focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/20"
               />
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -74,10 +92,10 @@ export default function CAListPage() {
                   type="button"
                   onClick={() => setFilter(f.key)}
                   className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                    "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all",
                     filter === f.key
-                      ? "bg-foreground text-white"
-                      : "bg-white text-foreground-secondary ring-1 ring-border hover:bg-background-subtle"
+                      ? f.activeClass + " shadow-sm"
+                      : "bg-background-subtle text-foreground-secondary ring-1 ring-border hover:bg-white"
                   )}
                 >
                   {f.label}
@@ -87,11 +105,47 @@ export default function CAListPage() {
           </div>
 
           {filtered.length === 0 ? (
-            <p className="py-16 text-center text-sm text-foreground-muted">
-              該当するCAがいません
-            </p>
+            <div className="rounded-xl border border-dashed border-border bg-white py-16 text-center">
+              <p className="text-sm font-medium text-foreground-muted">
+                該当するCAがいません
+              </p>
+            </div>
+          ) : showGrouped ? (
+            <div className="space-y-8">
+              <section>
+                <div className="mb-4 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-warning" />
+                  <h2 className="text-sm font-semibold text-foreground">
+                    要フォロー（{needsSupportList.length}名）
+                  </h2>
+                  <p className="text-xs text-foreground-muted">
+                    優先的に確認してください
+                  </p>
+                </div>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {needsSupportList.map((ca) => (
+                    <CACard key={ca.id} ca={ca} />
+                  ))}
+                </div>
+              </section>
+              {otherList.length > 0 && (
+                <section>
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-accent" />
+                    <h2 className="text-sm font-semibold text-foreground">
+                      その他のCA（{otherList.length}名）
+                    </h2>
+                  </div>
+                  <div className="grid gap-4 lg:grid-cols-2">
+                    {otherList.map((ca) => (
+                      <CACard key={ca.id} ca={ca} />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
               {filtered.map((ca) => (
                 <CACard key={ca.id} ca={ca} />
               ))}

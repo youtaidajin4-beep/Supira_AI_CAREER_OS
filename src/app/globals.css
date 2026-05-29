@@ -73,7 +73,30 @@
   border-radius: var(--radius-xl);
   border: 1px solid rgb(226 232 240 / 0.85);
   background: #ffffff;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+  box-shadow: var(--shadow-card);
+}
+
+.executive-page-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(59 91 219 / 0.12), transparent),
+    linear-gradient(180deg, #eef2ff 0%, #f4f6f9 35%, #f8fafc 100%);
+}
+
+.executive-hero {
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(135deg, #1e3a8a 0%, #364fc7 45%, #5c7cfa 100%);
+  box-shadow: 0 8px 32px rgb(30 58 138 / 0.25);
+  color: #fff;
+}
+
+.executive-section-accent {
+  border-left: 3px solid var(--accent);
+}
+
+.ca-page-bg {
+  background:
+    radial-gradient(ellipse 70% 40% at 100% 0%, rgb(217 119 6 / 0.06), transparent),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 html {

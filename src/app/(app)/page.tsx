@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, ListTodo, Users, Building2 } from "lucide-react";
 import { TopBar } from "@/components/layout/TopBar";
 import { ExecutiveOverviewSection } from "@/components/executive/ExecutiveOverviewSection";
 import { ExecutiveKpiBar } from "@/components/executive/ExecutiveKpiBar";
@@ -10,6 +10,7 @@ import { ExecutiveActionList } from "@/components/executive/ExecutiveActionList"
 import { ExecutiveJudgmentRail } from "@/components/executive/ExecutiveJudgmentRail";
 import { ExecutiveCAStrip } from "@/components/executive/ExecutiveCAStrip";
 import { ExecutiveAlertsGrid } from "@/components/executive/ExecutiveAlertsGrid";
+import { ExecutiveSectionHeader } from "@/components/executive/ExecutiveSectionHeader";
 import { CompanyActionCard } from "@/components/operations/CompanyActionCard";
 import { AddStudentModal } from "@/components/students/AddStudentModal";
 import { buttonClass } from "@/components/ui/button";
@@ -70,10 +71,10 @@ export default function DashboardPage() {
           </button>
         }
       />
-      <div className="min-h-0 flex-1 overflow-y-auto scroll-area bg-[#f3f4f6]">
+      <div className="min-h-0 flex-1 overflow-y-auto scroll-area executive-page-bg">
         {!data ? (
           <div className="mx-auto max-w-6xl animate-pulse space-y-4 p-6">
-            <div className="h-24 rounded-2xl bg-background-muted" />
+            <div className="h-32 rounded-2xl bg-background-muted" />
             <div className="h-80 rounded-2xl bg-background-muted" />
           </div>
         ) : (
@@ -105,14 +106,17 @@ export default function DashboardPage() {
             />
 
             <div className="grid gap-6 lg:grid-cols-5">
-              <div className="executive-panel lg:col-span-3">
-                <div className="border-b border-border-subtle px-5 py-4">
-                  <h2 className="text-sm font-semibold text-foreground">
-                    今日やること
-                  </h2>
-                  <p className="mt-0.5 text-xs text-foreground-muted">
-                    上から順に対応 · {prioritySorted.length}名
-                  </p>
+              <div className="executive-panel overflow-hidden lg:col-span-3">
+                <div className="flex items-center gap-3 border-b border-border-subtle bg-gradient-to-r from-accent-subtle/60 to-white px-5 py-4 executive-section-accent">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent text-white shadow-sm">
+                    <ListTodo className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <h2 className="text-sm font-semibold text-foreground">今日やること</h2>
+                    <p className="text-xs text-foreground-muted">
+                      上から順に対応 · {prioritySorted.length}名
+                    </p>
+                  </div>
                 </div>
                 <ExecutiveActionList cards={prioritySorted} />
               </div>
@@ -130,28 +134,28 @@ export default function DashboardPage() {
             <ExecutiveAlertsGrid alerts={data.layeredAlerts} />
 
             <section>
-              <div className="mb-3 flex items-end justify-between">
-                <div>
-                  <h2 className="text-sm font-semibold text-foreground">
-                    CAチームの状態
-                  </h2>
-                  <p className="text-xs text-foreground-muted">
-                    フォローが必要な担当者
-                  </p>
-                </div>
-                <Link href="/cas" className="text-xs font-medium text-accent hover:underline">
-                  CA管理へ →
-                </Link>
-              </div>
+              <ExecutiveSectionHeader
+                icon={Users}
+                title="CAチームの状態"
+                description="フォローが必要な担当者"
+                href="/cas"
+                linkLabel="CA管理へ →"
+                accent="warning"
+              />
               <ExecutiveCAStrip summaries={data.caAttentionList} />
             </section>
 
             {data.todayCompanyUpdates.length > 0 && (
-              <section className="executive-panel p-5">
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-sm font-semibold text-foreground">
-                    今日共有する企業連絡
-                  </h2>
+              <section className="executive-panel overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border-subtle bg-gradient-to-r from-emerald-50/80 to-white px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-success text-white shadow-sm">
+                      <Building2 className="h-4 w-4" />
+                    </span>
+                    <h2 className="text-sm font-semibold text-foreground">
+                      今日共有する企業連絡
+                    </h2>
+                  </div>
                   <Link
                     href="/company-updates"
                     className="text-xs font-medium text-accent hover:underline"
@@ -159,7 +163,7 @@ export default function DashboardPage() {
                     企業連絡へ →
                   </Link>
                 </div>
-                <div className="flex gap-4 overflow-x-auto pb-1 scroll-area">
+                <div className="flex gap-4 overflow-x-auto p-5 pb-6 scroll-area">
                   {data.todayCompanyUpdates.map((u) => (
                     <CompanyActionCard key={u.id} update={u} />
                   ))}
@@ -171,9 +175,9 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setOverviewOpen((o) => !o)}
-                className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold hover:bg-white/50"
+                className="flex w-full items-center justify-between bg-gradient-to-r from-slate-50 to-white px-5 py-4 text-left text-sm font-semibold transition-colors hover:from-slate-100/80"
               >
-                組織概況（KPI）
+                <span>組織概況（KPI）</span>
                 {overviewOpen ? (
                   <ChevronUp className="h-4 w-4 text-foreground-muted" />
                 ) : (
