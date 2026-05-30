@@ -86,7 +86,7 @@ export function InterviewHistoryTab({
             {interviews.map((interview) => (
               <article
                 key={interview.id}
-                className="rounded-xl border border-border bg-background p-5 shadow-xs transition-shadow hover:shadow-sm"
+                className="rounded-xl border border-border bg-background p-5 shadow-xs"
               >
                 <time className="text-[11px] font-medium tabular-nums text-foreground-muted">
                   {formatDateTime(interview.createdAt)}
@@ -94,9 +94,18 @@ export function InterviewHistoryTab({
                 <p className="mt-2 text-sm font-medium leading-snug text-foreground">
                   {interview.summary}
                 </p>
-                <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-foreground-muted">
-                  {interview.transcript}
-                </p>
+                {interview.analysisId ? (
+                  <Link
+                    href={`/analysis/${interview.analysisId}`}
+                    className="mt-3 inline-block text-sm font-medium text-accent hover:underline"
+                  >
+                    AI解析レポートを見る →
+                  </Link>
+                ) : (
+                  <p className="mt-3 line-clamp-2 text-xs text-foreground-muted">
+                    {interview.transcript}
+                  </p>
+                )}
               </article>
             ))}
           </div>

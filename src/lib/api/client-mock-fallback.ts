@@ -6,6 +6,7 @@ import aiAnalysisSeed from "@/data/seed/ai-analysis.json";
 import interviewsSeed from "@/data/seed/interviews.json";
 import { getMockRepository } from "@/lib/data/mock-repository";
 import { buildCAPerformanceMetrics, classifyCARiskStudents } from "@/lib/cas/performance";
+import { buildCAHomeData } from "@/lib/ca/home-stats";
 import type {
   AIAnalysis,
   Alert,
@@ -14,8 +15,10 @@ import type {
   CompanyUpdate,
   ExecutiveDashboardStats,
   Interview,
+  InterviewRecord,
   Student,
 } from "@/lib/data/types";
+import type { CAHomeData } from "@/lib/ca/home-stats";
 
 function clone<T>(data: T): T {
   return JSON.parse(JSON.stringify(data)) as T;
@@ -37,6 +40,27 @@ export const clientMockFallback = {
 
   cas: (): Promise<CAUser[]> =>
     mockRepo().listCAs().catch(() => clone(caUsersSeed as CAUser[])),
+
+  caHome: (caId: string): Promise<CAHomeData | null> =>
+    mockRepo()
+      .getCADashboard(caId)
+      .then(async (dashboard) => {
+        if (!dashboard) return null;
+        const analyses = await Promise.all(
+          dashboard.students.map((s) => mockRepo().getLatestAnalysis(s.id))
+        );
+        const map = new Map<string, AIAnalysis>();
+        for (const a of analyses) {
+          if (a) map.set(a.studentId, a);
+        }
+        const interviews = (
+          await Promise.all(
+            dashboard.students.map((s) => mockRepo().listInterviews(s.id))
+          )
+        ).flat();
+        return buildCAHomeData(dashboard.students, interviews, map);
+      })
+      .catch(() => null),
 
   caDashboard: (id: string): Promise<CADashboardStats | null> =>
     mockRepo()
@@ -117,4 +141,10 @@ export const clientMockFallback = {
           );
         return match[0] ?? null;
       }),
+
+  interviewRecords: (studentId: string): Promise<InterviewRecord[]> =>
+    mockRepo().listInterviewRecordsByStudent(studentId),
+
+  interviewRecord: (analysisId: string): Promise<InterviewRecord | null> =>
+    mockRepo().getInterviewRecordByAnalysisId(analysisId),
 };

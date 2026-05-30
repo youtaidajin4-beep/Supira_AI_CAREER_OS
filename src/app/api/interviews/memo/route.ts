@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mapAnalysisResultToCreateInput } from "@/lib/ai/map-to-analysis-input";
 import { memoAnalysisResultSchema } from "@/lib/ai/schemas";
 import { getRepository } from "@/lib/data/get-repository";
 
@@ -51,21 +52,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const analysis = await repo.createAnalysis({
-      studentId,
-      summary: analysisResult.summary,
-      personality: analysisResult.personality,
-      strengths: analysisResult.strengths,
-      weaknesses: analysisResult.weaknesses,
-      orientation: analysisResult.orientation,
-      anxiety: analysisResult.anxiety,
-      nextActions: analysisResult.nextActions,
-      recommendedCompanies: [],
-      caRecommendedActions: analysisResult.caRecommendedActions,
-      temperatureAnalysis: analysisResult.temperatureAnalysis,
-      temperatureScore: analysisResult.temperatureScore,
-      source: "memo",
-    });
+    const analysis = await repo.createAnalysis(
+      mapAnalysisResultToCreateInput(
+        {
+          ...analysisResult,
+          recommendedCompanies:
+            analysisResult.recommendedCompanies ??
+            analysisResult.insights.companyFit.bestTypes,
+        },
+        studentId,
+        { source: "memo" }
+      )
+    );
 
     const interview = await repo.createInterview({
       studentId,

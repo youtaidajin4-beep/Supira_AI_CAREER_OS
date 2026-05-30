@@ -3,6 +3,7 @@
     "id": "ca-001",
     "name": "山田 健太",
     "role": "シニアCA",
+    "accountRole": "ca",
     "studentCount": 0,
     "riskStudentCount": 0,
     "highTempCount": 0,

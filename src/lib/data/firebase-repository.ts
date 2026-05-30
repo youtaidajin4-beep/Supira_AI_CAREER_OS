@@ -180,9 +180,23 @@ class FirebaseRepository implements DataRepository {
       caRecommendedActions: (data.caRecommendedActions as string[]) ?? [],
       temperatureAnalysis: String(data.temperatureAnalysis ?? ""),
       temperatureScore: String(data.temperatureScore ?? ""),
+      executiveNotes: data.executiveNotes as string | undefined,
+      insights: data.insights as AIAnalysis["insights"],
       source: data.source as AIAnalysis["source"],
       createdAt: tsToIso(data.createdAt),
     };
+  }
+
+  async getInterviewRecordByAnalysisId(analysisId: string) {
+    return getMockRepository().getInterviewRecordByAnalysisId(analysisId);
+  }
+
+  async listInterviewRecordsByStudent(studentId: string) {
+    return getMockRepository().listInterviewRecordsByStudent(studentId);
+  }
+
+  async listInterviewRecordsByCA(caId: string) {
+    return getMockRepository().listInterviewRecordsByCA(caId);
   }
 
   async createAnalysis(data: CreateAnalysisInput): Promise<AIAnalysis> {

@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const studentContext = `名前: ${student.name}\n大学: ${student.university}\n志望業界: ${student.industry}\n温度感: ${student.temperature}\nステータス: ${student.status}`;
+    const studentContext = `名前: ${student.name}\n大学: ${student.university}\n学年: ${student.grade}\n志望業界: ${student.industry}\nステータス: ${student.status}\n温度感: ${student.temperature}\n次回アクション: ${student.nextAction}\nESメモ: ${student.esMemo || "なし"}\nリスク: ${student.riskReason || "なし"}`;
 
     const analysis = await analyzeMemo(trimmed, studentContext);
     return NextResponse.json(analysis);

@@ -7,6 +7,7 @@ import { StudentList } from "@/components/students/StudentList";
 import { StudentKarte } from "@/components/students/StudentKarte";
 import { StudentTabs } from "@/components/students/StudentTabs";
 import { AnalysisPanel } from "@/components/ai/AnalysisPanel";
+import { PortalContextBar } from "@/components/shared/PortalContextBar";
 import { buttonClass } from "@/components/ui/button";
 import { ListItemSkeleton } from "@/components/ui/skeleton";
 import { clientMockFallback } from "@/lib/api/client-mock-fallback";
@@ -75,6 +76,9 @@ export default function StudentDetailPage({
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background">
         <div className="shrink-0">
           <StudentKarte student={student} />
+          <div className="border-b border-border-subtle px-4 py-3 lg:px-6">
+            <PortalContextBar student={student} variant="admin-on-student" />
+          </div>
           <div className="flex items-center justify-end gap-2 border-b border-border-subtle px-4 py-2 lg:hidden">
             <Link
               href={`/interviews/upload?studentId=${id}`}

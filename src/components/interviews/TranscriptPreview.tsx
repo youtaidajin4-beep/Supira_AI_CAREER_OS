@@ -22,7 +22,7 @@ export function TranscriptPreview({
         </p>
       </Card>
       <div className="rounded-xl border border-border bg-background-subtle">
-        <AnalysisPanel analysis={analysis} compact />
+        <AnalysisPanel analysis={analysis} compact flowLayout />
       </div>
     </div>
   );

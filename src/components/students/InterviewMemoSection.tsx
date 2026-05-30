@@ -8,8 +8,34 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AnalysisCard, TagList } from "@/components/ai/AnalysisCard";
+import { CAInterviewAnalysisReveal } from "@/components/ca/CAInterviewAnalysisReveal";
 import { safeJson } from "@/lib/utils/safe-json";
 import { cn } from "@/lib/utils/cn";
+
+function memoPreviewToAnalysis(
+  preview: MemoAnalysisResult,
+  studentId: string
+): AIAnalysis {
+  return {
+    id: "preview",
+    studentId,
+    summary: preview.summary,
+    personality: preview.personality,
+    strengths: preview.strengths,
+    weaknesses: preview.weaknesses,
+    orientation: preview.orientation,
+    anxiety: preview.anxiety,
+    nextActions: preview.nextActions,
+    recommendedCompanies:
+      preview.recommendedCompanies ?? preview.insights.companyFit.bestTypes,
+    caRecommendedActions: preview.caRecommendedActions,
+    temperatureAnalysis: preview.temperatureAnalysis,
+    temperatureScore: preview.temperatureScore,
+    insights: preview.insights,
+    executiveNotes: preview.insights.wowInsight,
+    createdAt: new Date().toISOString(),
+  };
+}
 
 type Step = "idle" | "generating" | "preview" | "saving" | "saved" | "error";
 
@@ -25,7 +51,7 @@ export function InterviewMemoSection({
   onSaved,
   embedded = false,
 }: InterviewMemoSectionProps) {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(!embedded);
   const [memo, setMemo] = useState("");
   const [step, setStep] = useState<Step>("idle");
   const [error, setError] = useState("");
@@ -108,31 +134,39 @@ export function InterviewMemoSection({
 
   const isBusy = step === "generating" || step === "saving";
 
-  return (
-    <Card padding="md" className={cn(!embedded && "mx-4 lg:mx-6")}>
-      <button
-        type="button"
-        onClick={() => setCollapsed(!collapsed)}
-        className="flex w-full items-center justify-between gap-2 text-left"
-      >
-        <div>
-          <h3 className="text-sm font-semibold tracking-tight text-foreground">
-            面談メモを追加
-          </h3>
-          <p className="mt-0.5 text-xs text-foreground-muted">
-            {collapsed
-              ? "タップしてメモ入力・AI要約"
-              : "面談後のメモからAI要約を生成し、カルテに保存"}
-          </p>
-        </div>
-        {collapsed ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-foreground-muted" />
-        ) : (
-          <ChevronUp className="h-4 w-4 shrink-0 text-foreground-muted" />
-        )}
-      </button>
+  const wrapperClass = embedded ? "space-y-4" : undefined;
+  const Wrapper = embedded ? "div" : Card;
+  const wrapperProps = embedded
+    ? { className: wrapperClass }
+    : { padding: "md" as const, className: cn("mx-4 lg:mx-6") };
 
-      {!collapsed && (
+  return (
+    <Wrapper {...wrapperProps}>
+      {!embedded && (
+        <button
+          type="button"
+          onClick={() => setCollapsed(!collapsed)}
+          className="flex w-full items-center justify-between gap-2 text-left"
+        >
+          <div>
+            <h3 className="text-sm font-semibold tracking-tight text-foreground">
+              面談メモを追加
+            </h3>
+            <p className="mt-0.5 text-xs text-foreground-muted">
+              {collapsed
+                ? "タップしてメモ入力・AI要約"
+                : "面談後のメモからAI要約を生成し、カルテに保存"}
+            </p>
+          </div>
+          {collapsed ? (
+            <ChevronDown className="h-4 w-4 shrink-0 text-foreground-muted" />
+          ) : (
+            <ChevronUp className="h-4 w-4 shrink-0 text-foreground-muted" />
+          )}
+        </button>
+      )}
+
+      {(embedded || !collapsed) && (
         <div className="mt-4 space-y-4 border-t border-border-subtle pt-4">
           <Textarea
             label="面談メモ"
@@ -170,7 +204,14 @@ export function InterviewMemoSection({
           )}
 
           {preview &&
-            (step === "preview" || step === "saving" || step === "saved") && (
+            (step === "preview" || step === "saving" || step === "saved") &&
+            (embedded ? (
+              <CAInterviewAnalysisReveal
+                analysis={memoPreviewToAnalysis(preview, student.id)}
+                student={student}
+                transcript={memo.trim()}
+              />
+            ) : (
               <div className="max-h-[min(50vh,400px)] space-y-3 overflow-y-auto overscroll-y-contain rounded-xl border border-border bg-background-subtle/50 p-4 scroll-area scroll-smooth">
                 <p className="sticky top-0 bg-background-subtle/95 pb-2 text-xs font-semibold uppercase tracking-wider text-foreground-muted backdrop-blur-sm">
                   生成結果のプレビュー
@@ -198,10 +239,15 @@ export function InterviewMemoSection({
                   <p className="mt-2">{preview.temperatureAnalysis}</p>
                 </AnalysisCard>
                 <AnalysisCard title="CAへの推奨アクション">
-                  <TagList items={preview.caRecommendedActions} />
+                  <TagList
+                    items={
+                      preview.caRecommendedActions ??
+                      preview.insights.caPlaybook.doToday
+                    }
+                  />
                 </AnalysisCard>
               </div>
-            )}
+            ))}
 
           <div className="flex flex-wrap gap-2">
             <Button
@@ -255,6 +301,6 @@ export function InterviewMemoSection({
           </div>
         </div>
       )}
-    </Card>
+    </Wrapper>
   );
 }

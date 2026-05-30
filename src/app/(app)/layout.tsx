@@ -1,9 +1,14 @@
 import { AppShell } from "@/components/layout/AppShell";
+import { AuthProvider } from "@/lib/auth/auth-context";
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AuthProvider>
+      <AppShell>{children}</AppShell>
+    </AuthProvider>
+  );
 }

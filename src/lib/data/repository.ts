@@ -15,6 +15,7 @@ import type {
   CompanyListItem,
   ExecutiveDashboardStats,
   Interview,
+  InterviewRecord,
   KnowledgeItem,
   Notification,
   Student,
@@ -38,6 +39,13 @@ export interface DataRepository {
   createInterview(data: CreateInterviewInput): Promise<Interview>;
   getLatestAnalysis(studentId: string): Promise<AIAnalysis | null>;
   getAnalysis(id: string): Promise<AIAnalysis | null>;
+  getInterviewRecordByAnalysisId(
+    analysisId: string
+  ): Promise<InterviewRecord | null>;
+  listInterviewRecordsByStudent(
+    studentId: string
+  ): Promise<InterviewRecord[]>;
+  listInterviewRecordsByCA(caId: string): Promise<InterviewRecord[]>;
   createAnalysis(data: CreateAnalysisInput): Promise<AIAnalysis>;
   listNotifications(): Promise<Notification[]>;
   getDashboardStats(): Promise<DashboardStats>;

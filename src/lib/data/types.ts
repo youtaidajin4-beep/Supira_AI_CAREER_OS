@@ -209,10 +209,16 @@ export interface Student {
   updatedAt: string;
 }
 
+/** アプリログイン権限（代表 admin / CA ca） */
+export type AccountRole = "admin" | "ca";
+
 export interface CAUser {
   id: string;
   name: string;
+  /** 職位ラベル（シニアCA 等） */
   role: string;
+  /** ポータルログイン権限（未設定時は ca 扱い） */
+  accountRole?: AccountRole;
   studentCount: number;
   riskStudentCount: number;
   highTempCount: number;
@@ -238,6 +244,12 @@ export interface Interview {
   createdAt: string;
 }
 
+/** 面談記録 + AI解析（保存済みセット） */
+export interface InterviewRecord {
+  interview: Interview;
+  analysis: AIAnalysis;
+}
+
 export type AnalysisSource = "audio" | "memo";
 
 export interface AIAnalysis {
@@ -256,6 +268,8 @@ export interface AIAnalysis {
   executiveNotes?: string;
   temperatureAnalysis: string;
   temperatureScore: string;
+  /** CA面談AIの詳細インサイト（新卒就活特化） */
+  insights?: import("@/lib/ai/interview-insights").InterviewAnalysisInsights;
   source?: AnalysisSource;
   createdAt: string;
 }
@@ -443,6 +457,7 @@ export interface CreateAnalysisInput {
   executiveNotes?: string;
   temperatureAnalysis: string;
   temperatureScore: string;
+  insights?: import("@/lib/ai/interview-insights").InterviewAnalysisInsights;
   source?: AnalysisSource;
 }
 

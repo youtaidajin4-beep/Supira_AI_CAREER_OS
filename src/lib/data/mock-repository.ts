@@ -56,6 +56,7 @@ import type {
   DashboardStats,
   ExecutiveDashboardStats,
   Interview,
+  InterviewRecord,
   Notification,
   Student,
   StudentFilters,
@@ -265,6 +266,54 @@ class MockRepository implements DataRepository {
   async getAnalysis(id: string): Promise<AIAnalysis | null> {
     const analysis = this.analyses.get(id);
     return analysis ? clone(analysis) : null;
+  }
+
+  async getInterviewRecordByAnalysisId(
+    analysisId: string
+  ): Promise<InterviewRecord | null> {
+    const analysis = await this.getAnalysis(analysisId);
+    if (!analysis) return null;
+
+    let interview: Interview | undefined;
+    if (analysis.interviewId) {
+      interview = this.interviews.get(analysis.interviewId);
+    }
+    if (!interview) {
+      interview = this.allInterviews().find(
+        (i) => i.analysisId === analysisId || i.studentId === analysis.studentId
+      );
+    }
+    if (!interview) return null;
+
+    return clone({ interview, analysis });
+  }
+
+  async listInterviewRecordsByStudent(
+    studentId: string
+  ): Promise<InterviewRecord[]> {
+    const interviews = await this.listInterviews(studentId);
+    const records: InterviewRecord[] = [];
+
+    for (const interview of interviews) {
+      if (!interview.analysisId) continue;
+      const analysis = await this.getAnalysis(interview.analysisId);
+      if (analysis) records.push({ interview, analysis });
+    }
+    return clone(records);
+  }
+
+  async listInterviewRecordsByCA(caId: string): Promise<InterviewRecord[]> {
+    const students = await this.listStudentsByCA(caId);
+    const all: InterviewRecord[] = [];
+    for (const s of students) {
+      const records = await this.listInterviewRecordsByStudent(s.id);
+      all.push(...records);
+    }
+    return all.sort(
+      (a, b) =>
+        new Date(b.analysis.createdAt).getTime() -
+        new Date(a.analysis.createdAt).getTime()
+    );
   }
 
   async createAnalysis(data: CreateAnalysisInput): Promise<AIAnalysis> {

@@ -17,6 +17,8 @@ interface AnalysisPanelProps {
   student?: Student | null;
   temperatureHistory?: TemperatureSnapshot[];
   compact?: boolean;
+  /** 親のスクロールに任せる（面談結果プレビュー等） */
+  flowLayout?: boolean;
 }
 
 function needsExecutiveIntervention(student: Student): boolean {
@@ -32,6 +34,7 @@ export function AnalysisPanel({
   student,
   temperatureHistory = [],
   compact,
+  flowLayout = false,
 }: AnalysisPanelProps) {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
@@ -54,10 +57,17 @@ export function AnalysisPanel({
   return (
     <div
       className={cn(
-        "h-full space-y-3 scroll-area scroll-smooth",
-        compact
-          ? "overflow-y-auto overscroll-y-contain p-4"
-          : "overflow-y-auto overscroll-y-contain p-5"
+        "space-y-3",
+        flowLayout
+          ? compact
+            ? "p-4"
+            : "p-5"
+          : cn(
+              "h-full scroll-area scroll-smooth",
+              compact
+                ? "overflow-y-auto overscroll-y-contain p-4"
+                : "overflow-y-auto overscroll-y-contain p-5"
+            )
       )}
     >
       <div className="sticky top-0 z-[1] -mx-1 rounded-xl bg-background-subtle/95 px-1 py-3 backdrop-blur-sm">

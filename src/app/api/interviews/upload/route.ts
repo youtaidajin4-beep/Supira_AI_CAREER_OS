@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mapAnalysisResultToCreateInput } from "@/lib/ai/map-to-analysis-input";
 import { analyzeTranscript, transcribeAudio } from "@/lib/ai/openai";
 import { getRepository } from "@/lib/data/get-repository";
 
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     const student = await repo.getStudent(studentId);
 
     const studentContext = student
-      ? `名前: ${student.name}\n大学: ${student.university}\n志望業界: ${student.industry}\n温度感: ${student.temperature}`
+      ? `名前: ${student.name}\n大学: ${student.university}\n学年: ${student.grade}\n志望業界: ${student.industry}\nステータス: ${student.status}\n温度感: ${student.temperature}\n次回アクション: ${student.nextAction}\nESメモ: ${student.esMemo || "なし"}\nリスク: ${student.riskReason || "なし"}`
       : undefined;
 
     const transcript = await transcribeAudio(file);
@@ -44,19 +45,11 @@ export async function POST(request: NextRequest) {
       studentContext
     );
 
-    const analysis = await repo.createAnalysis({
-      studentId,
-      summary: analysisResult.summary,
-      personality: analysisResult.personality,
-      strengths: analysisResult.strengths,
-      weaknesses: analysisResult.weaknesses,
-      orientation: analysisResult.orientation,
-      anxiety: analysisResult.anxiety,
-      nextActions: analysisResult.nextActions,
-      recommendedCompanies: analysisResult.recommendedCompanies,
-      temperatureAnalysis: analysisResult.temperatureAnalysis,
-      temperatureScore: analysisResult.temperatureScore,
-    });
+    const analysis = await repo.createAnalysis(
+      mapAnalysisResultToCreateInput(analysisResult, studentId, {
+        source: "audio",
+      })
+    );
 
     const interview = await repo.createInterview({
       studentId,
