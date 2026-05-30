@@ -11,9 +11,11 @@ import {
   Bell,
   Settings,
   Building,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { useAuth } from "@/lib/auth/auth-context";
+import { buttonClass } from "@/components/ui/button";
 
 const navGroups = [
   {
@@ -47,7 +49,7 @@ const navGroups = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const { session } = useAuth();
+  const { session, signOut } = useAuth();
 
   return (
     <aside className="flex w-[220px] shrink-0 flex-col border-r border-border bg-[#fafbfc]">
@@ -105,6 +107,17 @@ export function AdminSidebar() {
           <p className="mt-0.5 text-xs font-semibold text-foreground">
             {session?.name ?? "福与 代表"}
           </p>
+          <button
+            type="button"
+            onClick={() => void signOut()}
+            className={cn(
+              buttonClass("secondary", "sm"),
+              "mt-3 w-full justify-center"
+            )}
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            ログアウト
+          </button>
         </div>
       </div>
     </aside>
